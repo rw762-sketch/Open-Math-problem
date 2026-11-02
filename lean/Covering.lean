@@ -16,3 +16,6 @@ import Covering.ScanT.All1M
 import Covering.ScanT.AllFull
 import Covering.BFF
 import Covering.FourPrimes
+import Covering.Replace
+import Covering.Shaped
+import Covering.ShapedBound
