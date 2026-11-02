@@ -1,57 +1,62 @@
-# Odd covering systems — search + kernel-checked verification
+# The φ-certificate for odd covering systems — Lean-verified exclusion bounds
 
-Target problem: the Erdős–Selfridge **odd covering problem** (Erdős #7). Does a covering
-system of ℤ exist whose moduli are odd, distinct and > 1? Open. The full problem is out of
-reach; this repo attacks the clean sub-target
+**Problem.** Erdős–Selfridge (Erdős #7): does there exist a covering system of ℤ whose moduli
+are odd, distinct and > 1? Open. This repo proves, with the Lean 4 kernel checking every step
+of the mathematics, that any such system must have a *large* lcm of moduli.
 
-> **t₉ ≤ 2**: a covering system in which every modulus is odd, > 1 and distinct, *except*
-> that 9 may be used twice.
+## Results
 
-Known: t₉ ≤ 3 (Bispels–Cohen–Harrington–Lowrance–Pontes–Schaumann–Wong, 2025), who name
-t₉ ≤ 2 as the next step. An odd covering system would give t_k ≤ 1 for every k.
+| Theorem (in `lean/Covering/`) | Statement | Trusted base |
+|---|---|---|
+| `one_le_phiSum` (Phi.lean) | For any covering of `[0,L)` by classes with distinct moduli `> 1` dividing `L`, and any set `P` of primes dividing `L`: `1 ≤ ∑_{c, c.d ∉ P} (1/c.d) ∏_{p ∈ P, p ∣ c.d} p/(p−1)` | kernel; axioms `propext, Classical.choice, Quot.sound` |
+| `no_covering_of_check` (Check.lean) | If the decidable certificate `check L` holds, no covering system with distinct moduli `> 1` has lcm `L` | same |
+| `odd_covering_lcm_gt_100000` (ScanK/All.lean) | Every covering of ℤ by finitely many classes with distinct odd moduli `> 1` has lcm `> 100000` | **kernel only**, no `native_decide` (200 chunk theorems by `decide +kernel`) |
+| `odd_covering_lcm_gt_675674` (ScanN.lean) | Same with lcm `> 675674` | mathematics kernel-checked; the scan of odd `L ≤ 675674` uses `native_decide` (adds axiom `Lean.ofReduceBool`, i.e. trusts the Lean compiler) |
 
-## Pipeline
+Previous certified bound (Mian–Siddique, July 2026, arXiv 2607.25628): lcm `> 10000`, whose
+prime-only CRT certificate explicitly stalls at `10395, 12285, 17325`. The φ-certificate excludes
+those three in milliseconds and everything up to `675674`. The first odd abundant number it does
+*not* exclude is `675675 = 3³·5²·7·11·13` (`S = 1.0127`). McNew–Setty's uncertified Gurobi
+classification (arXiv 2507.23041) reaches `10⁶`.
 
-```
-search.py / dfs.py   -> witness.json          (SAT / branch-and-bound over Z/LZ)
-verify.py            -> independent re-check   (no shared code with the search)
-lean/                -> kernel-checked proof   (core Lean 4, no mathlib, no native_decide)
-```
+## The certificate
 
-* `search.py L --K 9 --T 2` — CaDiCaL encoding: coverage clauses for every residue mod L,
-  at-most-one class per modulus (at-most-T for K), density precheck.
-* `dfs.py L K T` — exact branch-and-bound on the least uncovered residue with a capacity bound.
-* `capacity.py L` — the CRT capacity certificate (Mian–Siddique 2026) adapted to a repeat
-  budget; proves non-existence for many L by a one-line inequality.
-* `ladder.py BUDGET LMAX` — runs the search over every candidate L passing the density test.
-* `lean/Covering/Basic.lean` — `coversInt_of_check`: if the finite checker `checkBelow cs L`
-  returns `true` and every modulus divides `L`, then the classes cover all of ℤ. The checker is
-  structural recursion on `L` so the kernel evaluates it with `decide`.
-* `lean/Covering/Smoke.lean` — the classic period-12 covering, kernel-checked; a broken one
-  rejected; a timing probe.
+Write `φ` for Euler's totient. For `L > 0`:
 
-## Status (2026-11-02)
+> **Theorem.** If `∑_{d ∣ L, d composite} 1/φ(d) < 1` then there is no covering system of ℤ with
+> distinct moduli `> 1` all dividing `L`.
 
-* Pipeline verified end to end on the classic covering {0 (2), 0 (3), 1 (4), 5 (6), 7 (12)}.
-* Density + capacity prefilters: of 1368 candidate odd L ≤ 3·10⁶ built from primes ≤ 23,
-  755 survive. Smallest survivor L = 945.
-* **L = 945 is UNSAT** for (K, T) = (9, 2): CaDiCaL proof in 557 s. Branch-and-bound is slower.
-* Bottleneck: proving UNSAT is slow (minutes per L at L ≈ 10³, hours beyond). All published
-  near-odd coverings use enormous lcms (prime-power tails like 3², 3³, …, 3^{q−1}), so a small-lcm
-  witness for t₉ ≤ 2 may well not exist; the search cannot currently say either way.
+*Proof.* Let `P` be the primes dividing `L`. A covering uses each `p ∈ P` as a modulus at most
+once, say with residue `a_p`. The residues mod `L` avoiding every `a_p (mod p)` form a CRT
+product set `U` of size `L ∏_{p∈P}(1 − 1/p)`. A class `c (mod d)` with `d` composite meets `U`
+in at most `(L/d) ∏_{p ∤ d}(1 − 1/p)` residues (zero unless `c` avoids every `a_p` with `p ∣ d`).
+Since the composite classes must cover `U`, dividing by `|U|` gives
+`1 ≤ ∑_d (1/d) ∏_{p ∣ d} p/(p−1) = ∑_d 1/φ(d)`. ∎
 
-## Honest assessment
+Taking `P = ∅` in the same argument recovers the classical density bound `∑_{d∣L, d>1} 1/d ≥ 1`
+(i.e. `L` is non-deficient); `check L` is the disjunction of the two tests.
 
-A kernel-checked *existence* proof is possible the moment a witness is found: it is one
-`decide` call. A kernel-checked *non-existence* result needs a proof the kernel can replay;
-the capacity certificate is one (it is a closed inequality), the SAT solver's UNSAT is not
-(it would need DRAT replay inside Lean, which is not set up here).
+Lean proof structure: `Count.lean` (exact CRT count by induction over the prime set),
+`Phi.lean` (union bound and the rational inequality), `Fast.lean` (verified √L divisor
+enumeration and trial-division primality so the kernel can evaluate the certificate),
+`Check.lean` (decidable certificates, bridge from coverings of ℤ to `IsCovering` at the lcm,
+oddness of the lcm, chunked scanning), `ScanK/`, `ScanN.lean` (the scans).
 
 ## Reproduce
 
 ```
-pip install python-sat
-python3 search.py 945 --K 9 --T 2            # UNSAT, ~10 min
-python3 verify.py results/witness.json       # when a witness exists
-cd lean && lake build                        # needs elan; core Lean 4.22, no mathlib
+cd lean
+lake build            # mathlib from cache (≈1 GB); ScanK takes ~1 CPU-hour, ScanN ~3 min
+lake env lean Covering/Axioms.lean   # prints the axioms of each headline theorem
 ```
+
+Python cross-checks: `phi_certificate.py N` scans odd non-deficient `L ≤ N`;
+the empirical soundness test (certificate never fires on an `L` that has a covering,
+checked against brute force for `L ≤ 240` with all moduli allowed) is in the commit history.
+
+## Also in the repo (earlier, exploratory)
+
+`search.py`, `dfs.py`, `ladder.py`, `capacity.py`, `verify.py`: SAT and branch-and-bound
+search for a covering with `9` used twice and all other moduli distinct odd (`t₉ ≤ 2`, open);
+`L = 945` shown UNSAT (CaDiCaL, 557 s). `lean/Covering/Basic.lean` has the kernel-checkable
+*existence* verifier for any future witness.
