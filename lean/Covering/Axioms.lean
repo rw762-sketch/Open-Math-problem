@@ -7,3 +7,4 @@ import Covering.ScanN
 #print axioms Covering.towerSum_le_bff
 #print axioms Covering.no_covering_3_5_7_11
 #print axioms Covering.five_primes_of_odd_covering
+#print axioms Covering.odd_covering_lcm_gt_6891884_kernel

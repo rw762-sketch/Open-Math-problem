@@ -19,3 +19,4 @@ import Covering.FourPrimes
 import Covering.Replace
 import Covering.Shaped
 import Covering.ShapedBound
+import Covering.ShapedK6.All

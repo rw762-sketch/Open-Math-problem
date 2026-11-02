@@ -188,3 +188,32 @@ theorem gen_of_shaped : ∀ ps : List ℕ, ps.Sorted (· < ·) → (∀ p ∈ ps
       rw [this]; exact Gen.nil _
 
 end Covering
+
+namespace Covering
+
+theorem powAll_of {g : ℕ → Bool} {p N : ℕ} :
+    ∀ f a, (∀ j, 1 ≤ j → j ≤ f → a * p ^ j ≤ N → g (a * p ^ j) = true) →
+      powAll g p N f a = true := by
+  intro f
+  induction f with
+  | zero => intro a _; rfl
+  | succ f ih =>
+    intro a h
+    simp only [powAll]
+    split_ifs with hap
+    · have h1 : g (a * p) = true := by simpa using h 1 le_rfl (by omega) (by simpa using hap)
+      have h2 : powAll g p N f (a * p) = true := ih (a * p) (fun j hj1 hjf hjN => by
+        have := h (j + 1) (by omega) (by omega) (by rw [pow_succ', ← mul_assoc]; exact hjN)
+        rwa [pow_succ', ← mul_assoc] at this)
+      simp [h1, h2]
+    · rfl
+
+/-- Assembly: `chkGen` at a node from its head check and all its children. -/
+theorem chkGen_cons_of {chk : ℕ → Bool} {N p : ℕ} {ps : List ℕ} {acc : ℕ}
+    (h0 : (acc == 1 || chk acc) = true)
+    (h : ∀ j, 1 ≤ j → j ≤ 64 → acc * p ^ j ≤ N → chkGen chk N ps (acc * p ^ j) = true) :
+    chkGen chk N (p :: ps) acc = true := by
+  simp only [chkGen, Bool.and_eq_true]
+  exact ⟨h0, powAll_of 64 acc h⟩
+
+end Covering

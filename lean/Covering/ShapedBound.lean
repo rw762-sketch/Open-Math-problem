@@ -49,6 +49,39 @@ theorem primes_in_OP {L N : ℕ} (hodd : Odd L) (hL0 : L ≠ 0) (hsh : Shaped L)
   have := Nat.le_of_dvd (Nat.pos_of_ne_zero hL0) (list_prod_dvd OP OP_pairwise hall)
   omega
 
+/-- General form: any Boolean test `chk` that is passed by every shaped `L ≤ N` and that
+certifies non-coverings. -/
+theorem odd_covering_lcm_gt_of_chkGen' (chk : ℕ → Bool) (N : ℕ) (hN : N < 2 ^ 64)
+    (hNP : N < OP.prod) (h : chkGen chk N OP 1 = true)
+    (hchk : ∀ L, chk L = true → ∀ S, ¬ IsCovering L S)
+    (S : Finset Cls) (hgt : ∀ c ∈ S, 1 < c.d) (hodd : ∀ c ∈ S, Odd c.d)
+    (hinj : ∀ c ∈ S, ∀ c' ∈ S, c.d = c'.d → c = c') (hcov : CoversZ S) :
+    N < S.lcm (·.d) := by
+  by_contra hle
+  push_neg at hle
+  have hS := isCovering_lcm S hgt hinj hcov
+  obtain ⟨L', hL'le, hL'odd, hsh, S', hS'⟩ := reduce_to_shaped _ (lcm_odd S hodd) S hS
+  have hL'N : L' ≤ N := hL'le.trans hle
+  have hL'0 : L' ≠ 0 := hS'.pos.ne'
+  have hL'1 : L' ≠ 1 := by
+    intro h1
+    obtain ⟨c, hc, _⟩ := hS'.cov 0 hS'.pos
+    have := Nat.le_of_dvd hS'.pos (hS'.dvd c hc)
+    have := hS'.gt c hc
+    omega
+  have hG : Gen OP L' := gen_of_shaped OP OP_sorted OP_primes 1 L' hL'0
+    (primes_in_OP hL'odd hL'0 hsh hL'N hNP) (fun p _ => Nat.coprime_one_left p)
+    (by rw [one_mul]; exact hsh)
+  have hc := chkGen_complete hN OP L' hG (fun p hp => by have := (OP_primes p hp).2; omega)
+    1 Nat.one_pos (by rw [one_mul]; exact hL'N) h
+  rw [one_mul] at hc
+  have hc2 : chk L' = true := by
+    simp only [Bool.or_eq_true, beq_iff_eq] at hc
+    rcases hc with h1 | h1
+    · exact absurd h1 hL'1
+    · exact h1
+  exact hchk L' hc2 S' hS'
+
 theorem odd_covering_lcm_gt_of_chkGen (N : ℕ) (hN : N < 2 ^ 64) (hNP : N < OP.prod)
     (h : chkGen check2 N OP 1 = true)
     (S : Finset Cls) (hgt : ∀ c ∈ S, 1 < c.d) (hodd : ∀ c ∈ S, Odd c.d)

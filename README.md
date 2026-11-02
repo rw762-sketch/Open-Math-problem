@@ -24,7 +24,7 @@ lcm ≥ 9 704 539 845 with a Lean package that we have not yet rebuilt. See
 | `odd_covering_lcm_gt_100000` (ScanK/) | odd covering ⇒ lcm `> 10⁵` | **kernel only** (`decide +kernel`) |
 | `odd_covering_lcm_gt_675674` (ScanN.lean) | odd covering ⇒ lcm `> 675674` | scan by `native_decide` (`Lean.ofReduceBool`) |
 | `odd_covering_lcm_gt_1000000` (ScanT/All1M.lean) | odd covering ⇒ lcm `> 10⁶` | scan by `native_decide` |
-| `odd_covering_lcm_gt_6891884` (ScanT/AllFull.lean) | odd covering ⇒ lcm `> 6 891 884` | scan by `native_decide` |
+| `odd_covering_lcm_gt_6891884_kernel` (ShapedK6/All.lean) | odd covering ⇒ lcm `> 6 891 884` | **kernel only**: prime replacement (`Replace.lean`) reduces to the 363 shaped moduli (`Shaped.lean`), each checked by `decide +kernel`; build < 4 min |
 
 Context. Previous *certified* bound: lcm `> 10⁴` (Mian–Siddique, arXiv 2607.25628, July 2026),
 whose prime-only CRT certificate stalls at `10395, 12285, 17325`; they name "charging prime-power
