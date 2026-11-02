@@ -19,8 +19,8 @@ for this problem, but it is no longer the strongest *claimed* bound. The write-u
 ## Milestone 1 — close out the current Lean results ✅/🔄
 - ✅ `one_le_phiSum`, `one_le_towerSum`, decidable certificates (kernel, standard axioms).
 - ✅ `odd_covering_lcm_gt_675674`, `odd_covering_lcm_gt_1000000` (`native_decide`).
-- 🔄 `odd_covering_lcm_gt_100000` kernel-only (ScanK, 150/165 chunks).
-- 🔄 `odd_covering_lcm_gt_6891884` (ScanT, 100/173 chunks).
+- 🔄 `odd_covering_lcm_gt_100000` kernel-only (ScanK, 79/165 chunks; ~1.5 min/chunk).
+- 🔄 `odd_covering_lcm_gt_6891884` (ScanT, 90/173 chunks; ~2.5 min/chunk).
 - ⬜ Commit, regenerate `Axioms.lean` output, tag `v0.1`.
 
 ## Milestone 2 — reproduce Schroeder's Lean package ⬜
@@ -46,7 +46,7 @@ Outline:
 ## Milestone 5 — prime-support version of the tower certificate ✅ (2 Nov)
 - Our certificate is per-`L`; Hackmon/BFF/Schroeder are per prime support with arbitrary exponents.
 - ✅ `towerSum_le_bff`: `T(L) ≤ ∏(p−1)/(p−2) − 1 − Σ 1/(p−2)` (kernel, standard axioms). ✅ `no_covering_3_5_7_11`: no covering with lcm `3^a5^b7^c11^d`, any exponents (Hackmon's four-prime theorem at that prime set, now in Lean).
-- ⬜ General prime replacement (any four odd primes) via monotonicity of `1/(p−2)`.
+- ✅ `five_primes_of_odd_covering`: every odd distinct covering has ≥ 5 distinct primes in its lcm (induction on primes in increasing order; standard axioms). This is the ceiling of first-order sieves: BFF value exceeds 1 at `{3,5,7,11,13}`.
 
 ## Milestone 6 — beyond first-order sieves 🧪
 - Only route to new numerical bounds past 11 486 475: prime-by-prime distorted sieve (Hough / BBMST) or Schroeder-style conditional reweighting. Research-level formalization; decide after Milestone 2.

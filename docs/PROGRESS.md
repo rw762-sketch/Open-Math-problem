@@ -51,13 +51,14 @@ Consequences: the per‑$L$ certificate is strictly stronger than BFF (e.g. BFF 
 | 1 | Tower certificate inequality | **proved** (prose above; Lean kernel `one_le_towerSum`) | `lean/Covering/Tower.lean` |
 | 2 | φ-certificate inequality | **proved** (Lean kernel `one_le_phiSum`) | `lean/Covering/Phi.lean` |
 | 3 | Decidable checks `check`, `check2` are sound (divisor enumeration, trial division, valuations verified) | **proved** (kernel) | `Fast.lean`, `Check.lean`, `TowerCheck.lean` |
-| 4 | Odd covering ⇒ lcm $> 10^5$ | **proved, kernel only** (build 150/165 chunks at time of writing) | `ScanK/` |
+| 4 | Odd covering ⇒ lcm $> 10^5$ | **proved, kernel only** (build 79/165 chunks at time of writing; earlier counts in this log double-counted files) | `ScanK/` |
 | 5 | Odd covering ⇒ lcm $> 675\,674$ and $> 10^6$ | **native** | `ScanN.lean`, `ScanT/All1M.lean` |
-| 6 | Odd covering ⇒ lcm $> 6\,891\,884$ | **native** (build 100/173 chunks) | `ScanT/AllFull.lean` |
+| 6 | Odd covering ⇒ lcm $> 6\,891\,884$ | **native** (build 90/173 chunks) | `ScanT/AllFull.lean` |
 | 7 | First odd non-deficient $L$ with $S_\varphi(L) \ge 1$ is $675675 = 3^3 5^2 7\cdot 11\cdot 13$; with $T(L) \ge 1$ is $6891885 = 3^4 5\cdot 7\cdot 11\cdot 13\cdot 17$ | **numerical** (Python), and implied by 5–6 for the lower side | `phi_certificate.py`, `tower_certificate.py` |
 | 8 | Certificate never fires on an actual covering number (soundness cross-check, $L \le 240$, all moduli) | **numerical** | commit history |
 | 9 | Sieve + McNew–Setty pairwise-coprime inclusion–exclusion excludes 6891885 and first fails at 11486475 | **numerical**; validity of the combined bound **unproved** | `combined_certificate.py` |
 | 11 | Tower ⇒ BFF, and the four-prime theorem for $\{3,5,7,11\}$ | **proved** (kernel, standard axioms) | `BFF.lean` |
+| 12 | Every odd distinct covering has $\ge 5$ distinct primes in its lcm (`five_primes_of_odd_covering`) | **proved** (kernel, standard axioms) | `FourPrimes.lean` |
 | 10 | $t_9 \le 2$ (modulus 9 used twice) has no covering with $L = 945$ | **numerical** (CaDiCaL UNSAT, 557 s; not independently certified) | `search.py`, `verify.py` |
 
 ## 3. Literature check (SciSpace, 2 Nov 2026) and what it changes
