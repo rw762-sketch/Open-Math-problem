@@ -48,7 +48,12 @@ Outline:
 - ✅ `towerSum_le_bff`: `T(L) ≤ ∏(p−1)/(p−2) − 1 − Σ 1/(p−2)` (kernel, standard axioms). ✅ `no_covering_3_5_7_11`: no covering with lcm `3^a5^b7^c11^d`, any exponents (Hackmon's four-prime theorem at that prime set, now in Lean).
 - ✅ `five_primes_of_odd_covering`: every odd distinct covering has ≥ 5 distinct primes in its lcm (induction on primes in increasing order; standard axioms). This is the ceiling of first-order sieves: BFF value exceeds 1 at `{3,5,7,11,13}`.
 
-## Milestone 6 — beyond first-order sieves 🧪
+## Milestone 6 — beyond first-order sieves 🔄 (first step done, 2 Nov)
+- ✅ **Distorted tower certificate** (ours): condition on the tower complement at each prime, then BBMST-distort the mixed classes. Proof in prose (`docs/PROGRESS.md` §1b). Reduces to T(L) at δ = 0. Sound on all 94 known primitive covering numbers < 10⁶ (min η exactly 1).
+- ✅ Scan: every odd L ≤ 10¹⁰ with σ(L) ≥ 2L excluded except 20; first survivor **1 527 701 175 = 3³5²7²·11·13·17·19**. 1704 certificates + 220 near-boundary float decisions rechecked in exact arithmetic, 0 failures. ⇒ odd covering ⇒ lcm ≥ 1 527 701 175 (numerical, rests on the prose theorem).
+- ✅ Higher moments (k ≤ 4) give no gain; BBMST distortion alone stops at 11 486 475 too.
+- ⬜ Formalise the distorted tower certificate in Lean (measure-free version: weighted counting on Z/L with rational weights).
+- ⬜ Push past 1.53·10⁹: exact (non-union-bound) treatment of the first mixed stage {3,5}.
 - Only route to new numerical bounds past 11 486 475: prime-by-prime distorted sieve (Hough / BBMST) or Schroeder-style conditional reweighting. Research-level formalization; decide after Milestone 2.
 
 ## Side track (parked) 🧪

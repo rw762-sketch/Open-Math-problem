@@ -44,6 +44,40 @@ and $\sum_{S \subseteq P} \prod_{p \in S} \frac1{p-2} = \prod_{p \in P}\bigl(1 +
 
 Consequences: the per‑$L$ certificate is strictly stronger than BFF (e.g. BFF cannot exclude $L = 3^a 5^b 7^c 11^d 13^e$ for any exponents since $\prod - \sum = 2.14$, while $T(L) < 1$ for all such $L$ below $6\,891\,885$), and BFF alone gives only $\omega(L) \ge 5$ for odd coverings.
 
+## 1b. The distorted tower sieve (Milestone 6, first step)
+
+Every first-order method stops at $11\,486\,475$: the tower certificate ($T = 1.09$), the sieve plus McNew–Setty inclusion–exclusion ($1.011$), and, as we checked, the Balister–Bollobás–Morris–Sahasrabudhe–Tiba distorted sieve evaluated as written ($\eta = 1.0024$, optimised $\delta$). Combining two of them does better than either.
+
+**Setting.** List the primes of $L$ in any order $p_1, \dots, p_n$, put $Q_i = p_1^{e_1}\cdots p_i^{e_i}$, and pick caps $\delta_i \in [0, \tfrac12]$. With $u_k$ as before, let $g_k(v) = \min(p_k^{e_k - v}, u_k)/u_k$, $G_k = \sum_{v=1}^{e_k} g_k(v)$, and let $\nu$ be the multiplicative function with $\nu(p_k^v) = g_k(v)/(1-\delta_k)$ for $v \ge 1$. Define
+$$M^{(1)}_i = G_i\!\!\sum_{\substack{m \mid Q_{i-1}\\ m>1}}\!\! \nu(m),\qquad M^{(2)}_i = G_i^2\!\!\!\sum_{\substack{m_1, m_2 \mid Q_{i-1}\\ m_1, m_2 > 1}}\!\!\!\nu(\operatorname{lcm}(m_1,m_2)),\qquad \eta = \sum_{i} \min\Bigl(M^{(1)}_i,\ \frac{M^{(2)}_i}{4\delta_i(1-\delta_i)}\Bigr),$$
+with the second option dropped when $\delta_i = 0$.
+
+> **Distorted tower certificate** (proof below, **proved in prose**, not yet formalised). If $\eta < 1$ for some order and some caps, then no covering system with distinct moduli $> 1$ has lcm $L$. With every $\delta_i = 0$, $\eta = T(L)$, so this extends the tower certificate.
+
+**Proof.** Fix a covering $\{a_d \bmod d\}$ with distinct moduli dividing $L$. Each modulus $d$ belongs to exactly one stage $i$, the largest $i$ with $p_i \mid d$; write $d = m p_i^{j}$ with $m \mid Q_{i-1}$, $j \ge 1$. Call it **pure** if $m = 1$ and **mixed** otherwise; let $T_i, C_i \subseteq \mathbb{Z}/L$ be the unions of the pure and mixed classes of stage $i$. We build probability measures $P_0, \dots, P_n$, where $P_i$ is a measure on $\mathbb{Z}/Q_i$ extended uniformly to $\mathbb{Z}/L$, and $P_0$ is uniform. By CRT, write $\mathbb{Z}/Q_i = \mathbb{Z}/Q_{i-1} \times \mathbb{Z}/p_i^{e_i}$ and call $F(x) = \{x\}\times \mathbb{Z}/p_i^{e_i}$ a fibre.
+
+*(a) Condition on the tower.* The pure classes of stage $i$ remove a fixed set $Y_i \subseteq \mathbb{Z}/p_i^{e_i}$, the same in every fibre, with $|Y_i| \le \sum_{j=1}^{e_i} p_i^{e_i - j}$. So $A_i = \mathbb{Z}/p_i^{e_i}\setminus Y_i$ has $|A_i| \ge u_i \ge 1$. Put $P'_i(x,y) = P_{i-1}(x)\,\mathbf 1[y \in A_i]/|A_i|$.
+
+*(b) Distort on the mixed classes.* Let $\alpha_i(x) = |\{y \in A_i : (x,y) \in C_i\}|/|A_i|$ be the $P'_i$-fraction of the fibre removed by mixed classes, and define $P_i$ from $P'_i$ by BBMST's rule (their (5)): on $C_i$, multiply by $\max\{0, \frac{\alpha_i - \delta_i}{\alpha_i(1-\delta_i)}\}$; off $C_i$, multiply by $\min\{\frac{1}{1-\alpha_i}, \frac{1}{1-\delta_i}\}$.
+
+Four facts, each a one-line check.
+1. *Fibre masses are preserved* in both (a) and (b), so $P_i(S) = P_{i-1}(S)$ for every $Q_{i-1}$-measurable $S$ (BBMST Lemma 2.1). In particular $P_n(T_i \cup C_i) = P_i(T_i \cup C_i)$.
+2. *$P_i(T_i) = 0$*, since $T_i$ is the set of $(x,y)$ with $y \in Y_i$, and $P'_i$ vanishes there; step (b) only rescales.
+3. *$P_i(C_i) \le \min\{E_{i-1}\alpha_i,\ E_{i-1}\alpha_i^2/(4\delta_i(1-\delta_i))\}$*, by BBMST Lemma 3.3 applied to $P'_i$ (their proof is fibre by fibre and only uses that $\alpha_i$ is the $P'_i$-fraction removed).
+4. *Class bound:* for $m \mid Q_i$ and any $b$, $P_i(b + m\mathbb{Z}) \le \nu(m)$. By induction: if $p_i \nmid m$ then $b+m\mathbb{Z}$ is $Q_{i-1}$-measurable and fact 1 applies. If $p_i^j \parallel m$, $m = m' p_i^j$, then in each fibre over $x \equiv b \pmod{m'}$ the class picks the $y \in A_i$ with $y \equiv b \pmod{p_i^j}$. There are at most $\min(p_i^{e_i-j}, |A_i|)$ of them, so step (a) gives mass at most $g_i(j)P_{i-1}(x)$ (as $s \mapsto \min(a,s)/s$ is non-increasing and $|A_i| \ge u_i$), and step (b) multiplies by at most $1/(1-\delta_i)$. Summing over $x$ gives $\nu(p_i^j)P_{i-1}(b + m'\mathbb{Z}) \le \nu(m)$.
+
+*Moments.* A point $(x,y)$ lies in the mixed class $a_d \bmod m p_i^j$ iff $x \equiv a_d \pmod m$ and $y \equiv a_d \pmod{p_i^j}$, so by the count in fact 4, $\alpha_i(x) \le \sum_{d = m p_i^j \text{ mixed}} g_i(j)\,\mathbf 1[x \equiv a_d \bmod m]$. Taking $E_{i-1}$ and using fact 4 gives $E_{i-1}\alpha_i \le M^{(1)}_i$. Squaring, a pair of conditions $x \equiv a \pmod{m_1}$, $x \equiv a' \pmod{m_2}$ is empty or one class modulo $\operatorname{lcm}(m_1,m_2)$, so $E_{i-1}\alpha_i^2 \le M^{(2)}_i$. Distinctness enters only here: each modulus contributes at most one class, so the sums over used moduli are bounded by sums over all divisors.
+
+*Conclusion.* The covered set is $\bigcup_i (T_i \cup C_i)$, so by facts 1–3 and the moment bounds, $P_n(\text{covered}) \le \sum_i P_i(C_i) \le \eta < 1$. Some residue is uncovered. $\square$
+
+*Closed form.* $\nu$ is multiplicative, so $\sum_{m \mid Q_{i-1}}\nu(m) = \prod_{k<i}(1 + c_kG_k)$ with $c_k = 1/(1-\delta_k)$. The pairs $(a,b) \in [0,e]^2$ with $\max(a,b) = v$ number $2v+1$, so $\sum_{m_1,m_2 \mid Q_{i-1}}\nu(\operatorname{lcm}) = \prod_{k<i}\bigl(1 + c_k\sum_{v\ge1}(2v+1)g_k(v)\bigr)$. Removing the terms with $m_1 = 1$ or $m_2 = 1$ gives $S_2 = \Pi_2 - 2\Pi_1 + 1$. Each $L$ therefore costs $O(\omega^2)$ (`hybrid_fast.py`, cross-checked against the divisor-sum implementation `hybrid_sieve.py`).
+
+*What it gives* (`hybrid_scan.py`, all **numerical** until formalised):
+- **Soundness check:** $\eta \ge 1$ on all 94 primitive covering numbers below $10^6$ in McNew–Setty's Table 2, minimised over every prime order and the $\delta$-grid, with minimum exactly $1$ (at $12$, $80$, $53248$, …). A sound certificate must pass this; a sharp one hits $1$.
+- **Scan:** every odd $L \le 10^{10}$ with $\sigma(L) \ge 2L$ (about $2\times10^7$ numbers) is excluded, except $20$ values, the smallest being $L_{**} = 1\,527\,701\,175 = 3^3 5^2 7^2\cdot 11\cdot 13\cdot 17\cdot 19$ ($\eta = 1.014$). So **every odd covering would have lcm $\ge 1\,527\,701\,175$**, given the theorem above.
+- **Exact check:** each of the $1704$ exclusions that needed the hybrid is emitted as an explicit certificate (order, $\delta$'s on the grid $k/200$) and rechecked in exact rational arithmetic (`verify_hybrid_exact.py`): $0$ failures, worst $\eta = 0.999002$. Float decisions near the boundary (tower values in $(0.99, 1)$, abundance within $10^{-9}$ of $2$) are logged and rechecked exactly.
+- **Comparison:** this is $220\times$ the tower wall and $130\times$ the wall shared by the first-order methods, and about $6\times$ below Schroeder's claimed $9.7\times10^9$. His method ("completion … with conditional reweighting") sounds related and should be compared once his package is rebuilt. The tower conditioning in step (a) is Hackmon's weight region; the distortion is BBMST's. As far as our search shows, the combination is not in either paper.
+
 ## 2. Claims ledger
 
 | # | Claim | Disposition | Where |
@@ -59,6 +93,8 @@ Consequences: the per‑$L$ certificate is strictly stronger than BFF (e.g. BFF 
 | 9 | Sieve + McNew–Setty pairwise-coprime inclusion–exclusion excludes 6891885 and first fails at 11486475 | **numerical**; validity of the combined bound **unproved** | `combined_certificate.py` |
 | 11 | Tower ⇒ BFF, and the four-prime theorem for $\{3,5,7,11\}$ | **proved** (kernel, standard axioms) | `BFF.lean` |
 | 12 | Every odd distinct covering has $\ge 5$ distinct primes in its lcm (`five_primes_of_odd_covering`) | **proved** (kernel, standard axioms) | `FourPrimes.lean` |
+| 13 | Distorted tower certificate ($\eta < 1$ ⇒ no covering with lcm $L$) | **proved in prose** (§1b); Lean pending | `hybrid_fast.py` |
+| 14 | Odd covering ⇒ lcm $\ge 1\,527\,701\,175$ | **numerical**, certificates rechecked exactly (rests on 13); Lean pending | `hybrid_scan.py`, `verify_hybrid_exact.py` |
 | 10 | $t_9 \le 2$ (modulus 9 used twice) has no covering with $L = 945$ | **numerical** (CaDiCaL UNSAT, 557 s; not independently certified) | `search.py`, `verify.py` |
 
 ## 3. Literature check (SciSpace, 2 Nov 2026) and what it changes

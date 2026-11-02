@@ -7,6 +7,8 @@
 are odd, distinct and > 1? Open. This repo proves, with the Lean 4 kernel checking every step
 of the mathematics, that any such system must have a *large* lcm of moduli.
 
+**New (2 Nov 2026): distorted tower sieve.** Combining the tower conditioning with the Balister–Bollobás–Morris–Sahasrabudhe–Tiba distortion excludes every odd candidate below **1 527 701 175** (certificates checked in exact arithmetic; validity proved in prose, Lean pending). See [docs/PROGRESS.md §1b](docs/PROGRESS.md).
+
 **Literature caveat (2 Nov 2026).** The tower-sieve idea appears independently in Hackmon
 (Zenodo, Apr 2026, per prime support, not formalized), and Schroeder (Zenodo, Sep 2026) *claims*
 lcm ≥ 9 704 539 845 with a Lean package that we have not yet rebuilt. See
