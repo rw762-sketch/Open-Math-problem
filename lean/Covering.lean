@@ -8,3 +8,9 @@ import Covering.Probe
 import Covering.ScanN
 import Covering.ScanK.All
 import Covering.Axioms
+import Covering.Product
+import Covering.Tower
+import Covering.TowerCheck
+import Covering.Probe3
+import Covering.ScanT.All1M
+import Covering.ScanT.AllFull
