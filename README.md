@@ -6,51 +6,61 @@ of the mathematics, that any such system must have a *large* lcm of moduli.
 
 ## Results
 
-| Theorem (in `lean/Covering/`) | Statement | Trusted base |
+| Theorem (`lean/Covering/`) | Statement | Trusted base |
 |---|---|---|
-| `one_le_phiSum` (Phi.lean) | For any covering of `[0,L)` by classes with distinct moduli `> 1` dividing `L`, and any set `P` of primes dividing `L`: `1 ≤ ∑_{c, c.d ∉ P} (1/c.d) ∏_{p ∈ P, p ∣ c.d} p/(p−1)` | kernel; axioms `propext, Classical.choice, Quot.sound` |
-| `no_covering_of_check` (Check.lean) | If the decidable certificate `check L` holds, no covering system with distinct moduli `> 1` has lcm `L` | same |
-| `odd_covering_lcm_gt_100000` (ScanK/All.lean) | Every covering of ℤ by finitely many classes with distinct odd moduli `> 1` has lcm `> 100000` | **kernel only**, no `native_decide` (200 chunk theorems by `decide +kernel`) |
-| `odd_covering_lcm_gt_675674` (ScanN.lean) | Same with lcm `> 675674` | mathematics kernel-checked; the scan of odd `L ≤ 675674` uses `native_decide` (adds axiom `Lean.ofReduceBool`, i.e. trusts the Lean compiler) |
+| `one_le_phiSum` (Phi.lean) | φ-certificate inequality (below) | kernel; axioms `propext, Classical.choice, Quot.sound` |
+| `one_le_towerSum` (Tower.lean) | tower-certificate inequality (below) | same |
+| `no_covering_of_check`, `no_covering_of_towerCheck` | decidable certificates exclude `L` | same |
+| `odd_covering_lcm_gt_100000` (ScanK/) | odd covering ⇒ lcm `> 10⁵` | **kernel only** (`decide +kernel`) |
+| `odd_covering_lcm_gt_675674` (ScanN.lean) | odd covering ⇒ lcm `> 675674` | scan by `native_decide` (`Lean.ofReduceBool`) |
+| `odd_covering_lcm_gt_1000000` (ScanT/All1M.lean) | odd covering ⇒ lcm `> 10⁶` | scan by `native_decide` |
+| `odd_covering_lcm_gt_6891884` (ScanT/AllFull.lean) | odd covering ⇒ lcm `> 6 891 884` | scan by `native_decide` |
 
-Previous certified bound (Mian–Siddique, July 2026, arXiv 2607.25628): lcm `> 10000`, whose
-prime-only CRT certificate explicitly stalls at `10395, 12285, 17325`. The φ-certificate excludes
-those three in milliseconds and everything up to `675674`. The first odd abundant number it does
-*not* exclude is `675675 = 3³·5²·7·11·13` (`S = 1.0127`). McNew–Setty's uncertified Gurobi
-classification (arXiv 2507.23041) reaches `10⁶`.
+Context. Previous *certified* bound: lcm `> 10⁴` (Mian–Siddique, arXiv 2607.25628, July 2026),
+whose prime-only CRT certificate stalls at `10395, 12285, 17325`; they name "charging prime-power
+towers" as the needed fix, which is what the tower certificate does. McNew–Setty (arXiv 2507.23041)
+classify covering numbers to `10⁶` with a MIP solver; their inclusion–exclusion inequality (their
+eq. (10)) is, numerically, a stronger necessary condition than the tower certificate on odd numbers
+and would informally exclude odd covering numbers further still, but no odd bound is stated there
+and nothing is machine-checked. So the contribution here is (i) a clean elementary sieve
+certificate that is cheap for a proof kernel to evaluate, (ii) the first formally verified exclusion
+bound past `10⁶`, and (iii) a 10× improvement of the kernel-only bound.
 
-## The certificate
+## The certificates
 
-Write `φ` for Euler's totient. For `L > 0`:
+Let `L = ∏ p^{e_p}`, `φ` Euler's totient, `u_p = p^{e_p} − (1 + p + ⋯ + p^{e_p−1})`.
 
-> **Theorem.** If `∑_{d ∣ L, d composite} 1/φ(d) < 1` then there is no covering system of ℤ with
-> distinct moduli `> 1` all dividing `L`.
+> **φ-certificate.** If `∑_{d ∣ L, d composite} 1/φ(d) < 1`, no covering system with distinct
+> moduli `> 1` has lcm `L`.
+>
+> **Tower certificate.** If `∑_{d ∣ L, ω(d) ≥ 2} ∏_{p ∣ L} min(p^{e_p − v_p(d)}, u_p) / u_p < 1`,
+> no covering system with distinct moduli `> 1` has lcm `L`. (Equal to the φ-certificate when `L`
+> is squarefree; sharp at `L = 12` and `L = 80`, which are covering numbers.)
 
-*Proof.* Let `P` be the primes dividing `L`. A covering uses each `p ∈ P` as a modulus at most
-once, say with residue `a_p`. The residues mod `L` avoiding every `a_p (mod p)` form a CRT
-product set `U` of size `L ∏_{p∈P}(1 − 1/p)`. A class `c (mod d)` with `d` composite meets `U`
-in at most `(L/d) ∏_{p ∤ d}(1 − 1/p)` residues (zero unless `c` avoids every `a_p` with `p ∣ d`).
-Since the composite classes must cover `U`, dividing by `|U|` gives
-`1 ≤ ∑_d (1/d) ∏_{p ∣ d} p/(p−1) = ∑_d 1/φ(d)`. ∎
+*Proof idea.* The moduli `p, p², …, p^{e_p}` are each used at most once. Sieving out their classes
+leaves, modulo `p^{e_p}`, at least `u_p` residues; the CRT product `U` of these sets has size
+`∏ |A_p|`. A class `c (mod d)` meets `U` in at most `∏_p min(p^{e_p − v_p(d)}, |A_p|)` residues
+(by CRT, the count factors over primes). The classes with `ω(d) ≥ 2` must cover `U`; divide the
+union bound by `|U|` and use `min(a,s)/s ≤ min(a,u)/u` for `u ≤ s`.
 
-Taking `P = ∅` in the same argument recovers the classical density bound `∑_{d∣L, d>1} 1/d ≥ 1`
-(i.e. `L` is non-deficient); `check L` is the disjunction of the two tests.
+First odd non-deficient `L` not excluded: φ: `675675 = 3³·5²·7·11·13`; tower:
+`6891885 = 3⁴·5·7·11·13·17` (`T = 1.0098`).
 
-Lean proof structure: `Count.lean` (exact CRT count by induction over the prime set),
-`Phi.lean` (union bound and the rational inequality), `Fast.lean` (verified √L divisor
-enumeration and trial-division primality so the kernel can evaluate the certificate),
-`Check.lean` (decidable certificates, bridge from coverings of ℤ to `IsCovering` at the lcm,
-oddness of the lcm, chunked scanning), `ScanK/`, `ScanN.lean` (the scans).
+Lean files: `Count.lean` (CRT count over a prime set), `Product.lean` (general CRT product count
+with arbitrary allowed residues), `Phi.lean`, `Tower.lean` (the two inequalities), `Fast.lean`
+(verified √L divisor enumeration, trial-division primality), `Check.lean`, `TowerCheck.lean`
+(verified p-adic valuation, decidable certificates, bridge from coverings of ℤ to the lcm, odd lcm,
+tail-recursive chunked scanning), `ScanK/`, `ScanN.lean`, `ScanT/` (the scans).
 
 ## Reproduce
 
 ```
 cd lean
-lake build            # mathlib from cache (≈1 GB); ScanK takes ~1 CPU-hour, ScanN ~3 min
+lake build            # mathlib from cache (≈1 GB); ScanK ≈1 CPU-hour, ScanN ≈3 min, ScanT ≈7 CPU-hours
 lake env lean Covering/Axioms.lean   # prints the axioms of each headline theorem
 ```
 
-Python cross-checks: `phi_certificate.py N` scans odd non-deficient `L ≤ N`;
+Python cross-checks: `phi_certificate.py N`, `tower_certificate.py N` scan odd non-deficient `L ≤ N`;
 the empirical soundness test (certificate never fires on an `L` that has a covering,
 checked against brute force for `L ≤ 240` with all moduli allowed) is in the commit history.
 
