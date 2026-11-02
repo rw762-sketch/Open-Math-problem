@@ -1,2 +1,10 @@
 import Covering.Basic
 import Covering.Smoke
+import Covering.Count
+import Covering.Phi
+import Covering.Fast
+import Covering.Check
+import Covering.Probe
+import Covering.ScanN
+import Covering.ScanK.All
+import Covering.Axioms
