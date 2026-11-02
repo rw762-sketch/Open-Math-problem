@@ -43,9 +43,10 @@ Outline:
 - Formalize; it should exclude `6 891 885` and fail first at `11 486 475`.
 - Value: closes the gap between our certificate and McNew–Setty's inequality with a proof.
 
-## Milestone 5 — prime-support version of the tower certificate ⬜
+## Milestone 5 — prime-support version of the tower certificate ✅ (2 Nov)
 - Our certificate is per-`L`; Hackmon/BFF/Schroeder are per prime support with arbitrary exponents.
-- Take `e_p → ∞` in `u_p` (`u_p/p^{e_p} → (p−2)/(p−1)`) and prove the monotonicity needed to get a statement "no odd covering supported on `{3,5,7,11}` for any exponents" from one finite check. Formalize. This recovers Hackmon's Four-Prime Theorem in Lean (he has none).
+- ✅ `towerSum_le_bff`: `T(L) ≤ ∏(p−1)/(p−2) − 1 − Σ 1/(p−2)` (kernel, standard axioms). ✅ `no_covering_3_5_7_11`: no covering with lcm `3^a5^b7^c11^d`, any exponents (Hackmon's four-prime theorem at that prime set, now in Lean).
+- ⬜ General prime replacement (any four odd primes) via monotonicity of `1/(p−2)`.
 
 ## Milestone 6 — beyond first-order sieves 🧪
 - Only route to new numerical bounds past 11 486 475: prime-by-prime distorted sieve (Hough / BBMST) or Schroeder-style conditional reweighting. Research-level formalization; decide after Milestone 2.

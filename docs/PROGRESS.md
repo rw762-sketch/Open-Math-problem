@@ -36,7 +36,7 @@ and the union bound over the composite $d$ gives $\sum_{d \text{ composite}} 1/\
 
 $$T(L) \ \le\ \prod_{p \in P}\frac{p-1}{p-2} \;-\; 1 \;-\; \sum_{p\in P}\frac{1}{p-2},$$
 
-so the classical BFF condition "$\prod_{p \mid L}\frac{p-1}{p-2} - \sum_{p \mid L}\frac1{p-2} \ge 2$ for every covering number $L$" is the exponent‑free limit of the tower certificate, and Hackmon's four‑prime theorem (his $R = 41/45$ for $\{3,5,7,11\}$) is this inequality evaluated at that prime set. (Status: **proved** in prose here; Lean formalization is Milestone 5.)
+so the classical BFF condition "$\prod_{p \mid L}\frac{p-1}{p-2} - \sum_{p \mid L}\frac1{p-2} \ge 2$ for every covering number $L$" is the exponent‑free limit of the tower certificate, and Hackmon's four‑prime theorem (his $R = 41/45$ for $\{3,5,7,11\}$) is this inequality evaluated at that prime set. (Status: **proved**, Lean kernel `towerSum_le_bff` in `BFF.lean`, standard axioms; corollary `no_covering_3_5_7_11`: no covering with lcm $3^a5^b7^c11^d$ for any exponents, i.e. Hackmon's four-prime theorem at $\{3,5,7,11\}$.)
 
 *Proof.* Since $u_p = p^{e_p} - \frac{p^{e_p}-1}{p-1} \ge p^{e_p}\frac{p-2}{p-1}$, for $p \mid d$ the factor satisfies $\frac{\min(p^{e_p - v}, u_p)}{u_p} \le \frac{p^{e_p-v}}{u_p} \le \frac{p-1}{p-2}\,p^{-v}$, and for $p \nmid d$ it equals $1$. Group the divisors $d$ by their support $S \subseteq P$, $|S| \ge 2$, and sum the geometric series over each exponent $v \in [1, e_p]$:
 $$T(L) \le \sum_{|S|\ge 2}\ \prod_{p\in S}\frac{p-1}{p-2}\sum_{v=1}^{e_p} p^{-v} \ \le\ \sum_{|S| \ge 2}\ \prod_{p \in S}\frac{p-1}{p-2}\cdot\frac{1}{p-1} \ =\ \sum_{|S| \ge 2}\ \prod_{p\in S}\frac{1}{p-2},$$
@@ -57,6 +57,7 @@ Consequences: the per‑$L$ certificate is strictly stronger than BFF (e.g. BFF 
 | 7 | First odd non-deficient $L$ with $S_\varphi(L) \ge 1$ is $675675 = 3^3 5^2 7\cdot 11\cdot 13$; with $T(L) \ge 1$ is $6891885 = 3^4 5\cdot 7\cdot 11\cdot 13\cdot 17$ | **numerical** (Python), and implied by 5–6 for the lower side | `phi_certificate.py`, `tower_certificate.py` |
 | 8 | Certificate never fires on an actual covering number (soundness cross-check, $L \le 240$, all moduli) | **numerical** | commit history |
 | 9 | Sieve + McNew–Setty pairwise-coprime inclusion–exclusion excludes 6891885 and first fails at 11486475 | **numerical**; validity of the combined bound **unproved** | `combined_certificate.py` |
+| 11 | Tower ⇒ BFF, and the four-prime theorem for $\{3,5,7,11\}$ | **proved** (kernel, standard axioms) | `BFF.lean` |
 | 10 | $t_9 \le 2$ (modulus 9 used twice) has no covering with $L = 945$ | **numerical** (CaDiCaL UNSAT, 557 s; not independently certified) | `search.py`, `verify.py` |
 
 ## 3. Literature check (SciSpace, 2 Nov 2026) and what it changes
@@ -81,7 +82,7 @@ Disposition: Milestone 4 is **deprioritised** — it rests on an unproved lemma 
 
 1. Rebuild Schroeder's Lean package outside this sandbox and print its axioms (decides the framing of everything).
 2. Prove the combined sieve + inclusion–exclusion bound (claim 9), then formalize; expected wall 11486475.
-3. Prime-support version of the tower certificate (take $e_p \to \infty$), recovering Hackmon's four-prime theorem in Lean.
+3. ~~Prime-support version of the tower certificate~~ done (`BFF.lean`); remaining: the general prime-replacement form (any four odd primes, via monotonicity of $1/(p-2)$).
 4. Write-up (outline in [MILESTONES.md](../MILESTONES.md)).
 
 *Related: [PROBLEM.md](PROBLEM.md) (statement and conventions) · [references/](references/) (one page per cited work).*

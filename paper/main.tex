@@ -157,7 +157,7 @@ Two readings. First, the certificate is strictly stronger than~\eqref{eq:bff}: f
 
 \section{What is checked, and what each theorem trusts}\label{sec:lean}
 
-Everything in Sections~\ref{sec:certificate} and~\ref{sec:bff} except Proposition~\ref{prop:bff} is formalised in Lean~4 against Mathlib (toolchain \lean{v4.22.0}); Proposition~\ref{prop:bff} is proved above in prose only. The development is in the repository's \lean{lean/Covering/} directory.
+Everything in Sections~\ref{sec:certificate} and~\ref{sec:bff} is formalised in Lean~4 against Mathlib (toolchain \lean{v4.22.0}); Proposition~\ref{prop:bff} is \lean{towerSum\_le\_bff} in \lean{BFF.lean}, and its corollary \lean{no\_covering\_3\_5\_7\_11} states that no covering system with distinct moduli has lcm $3^a5^b7^c11^d$ for any exponents $a,b,c,d \ge 1$, both with the standard three axioms. The development is in the repository's \lean{lean/Covering/} directory.
 
 \paragraph{Statement.} A covering of $\Z$ is a list of classes \lean{Cls r d}; \lean{IsCovering L S} packages: all moduli divide $L$, are $> 1$, are pairwise distinct, and the classes cover \lean{range L}. The bridge lemma \lean{isCovering\_lcm} passes from a covering of $\Z$ with distinct moduli $> 1$ to \lean{IsCovering} at $L = \lcm$ of the moduli, and \lean{lcm\_odd} records that the lcm of odd numbers is odd.
 
@@ -199,7 +199,7 @@ We checked the literature on 2~November~2026 (SciSpace and alphaXiv; Elicit's AP
 \item[Schroeder (Zenodo, Sept.~2026).] Claims $\omega(L) \ge 9$ for every odd distinct covering, hence $L \ge 9\,704\,539\,845$, with a Lean~4 package (toolchain \lean{v4.32.0-rc1}; no \lean{sorry} or \lean{native\_decide} found by inspection; standard definition of an odd distinct covering). \emph{Status: unchecked.} We could not rebuild the package in our environment. If it holds, it supersedes our numerical bounds by a factor of about $1400$; the elementary certificate and the kernel-only check retain independent interest, and its own Corollary~1.3 uses the squarefree case of Theorem~\ref{thm:phi}.
 \end{description}
 
-\paragraph{What is next.} In order: rebuild Schroeder's package and print its axioms; formalise Proposition~\ref{prop:bff}, which turns one finite check into an exclusion for all exponents over a prime set; then decide whether McNew--Setty's lemma can be proved at the configurations needed, since every first-order sieve we know ends at $11\,486\,475$ and going further needs the prime-by-prime distorted sieve of Hough and of Balister, Bollob\'as, Morris, Sahasrabudhe and Tiba.
+\paragraph{What is next.} In order: rebuild Schroeder's package and print its axioms; extend the four-prime theorem to arbitrary odd primes by prime replacement (monotonicity of $1/(p-2)$); then decide whether McNew--Setty's lemma can be proved at the configurations needed, since every first-order sieve we know ends at $11\,486\,475$ and going further needs the prime-by-prime distorted sieve of Hough and of Balister, Bollob\'as, Morris, Sahasrabudhe and Tiba.
 
 \paragraph{Reproducibility.} Repository: \url{https://github.com/rw762-sketch/Open-Math-problem}. \lean{lake build} rebuilds the Lean development from the Mathlib cache; \lean{lake env lean Covering/Axioms.lean} prints the axioms of each headline theorem; \lean{tower\_certificate.py N} and \lean{phi\_certificate.py N} are the independent Python scans.
 
