@@ -53,6 +53,15 @@ with arbitrary allowed residues), `Phi.lean`, `Tower.lean` (the two inequalities
 (verified p-adic valuation, decidable certificates, bridge from coverings of ℤ to the lcm, odd lcm,
 tail-recursive chunked scanning), `ScanK/`, `ScanN.lean`, `ScanT/` (the scans).
 
+## Beyond: what the next certificate would need
+
+Running the sieve and then McNew–Setty's pairwise-coprime inclusion–exclusion on the remaining
+classes (`combined_certificate.py`, not formalized, validity not yet proved) excludes
+`6891885` (`0.940`) but fails at `11486475 = 3³·5²·7·11·13·17` (`1.011`), exactly where
+McNew–Setty's own inequality fails. First-order sieve bounds of this kind appear to end there; going
+further needs the prime-by-prime distorted sieve of Hough / Balister–Bollobás–Morris–
+Sahasrabudhe–Tiba, which is a research-level formalization.
+
 ## Reproduce
 
 ```
