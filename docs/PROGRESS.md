@@ -66,6 +66,17 @@ Consequences: the per‑$L$ certificate is strictly stronger than BFF (e.g. BFF 
 - The Zenodo note of Rafik (Jan 2026) states only the density condition ($L \ge 945$); see [references/R26.md](references/R26.md).
 - Mian–Siddique (Jul 2026): $L > 10^4$, Lean; McNew–Setty (2025): covering numbers to $10^6$, inclusion–exclusion inequality; see [references/MS26.md](references/MS26.md), [references/MS25.md](references/MS25.md).
 
+## 3b. Status of McNew–Setty's Lemma 4.10 (the basis of Milestone 4)
+
+The lemma (covered proportion $\le \sum_{S \text{ pairwise coprime}} (-1)^{|S|+1}/\operatorname{lcm} S$) is stated in [MS25] with "follows likewise by inclusion–exclusion" and no written proof. Observations (ours):
+
+- It is **not** a pointwise inclusion–exclusion inequality: for moduli $\{2,4,3,9\}$ with nested classes, an integer in all four classes contributes $1 - 4 + 4 = 1$ to the alternating count of covered points, i.e. $0$ to the uncovered side where $1$ is needed. Any proof must average.
+- It is a **Shearer-type bound**: pairwise-coprime subsets are the independent sets of the "share a prime" graph $G_M$, so the right side is the independence polynomial $Z(G_M, -1/m)$, and $G_M$ is a valid dependency graph for the events "$n \in C_m$" by CRT. Shearer's theorem (1985) therefore proves the lemma whenever $(1/m)_{m\in M}$ lies in the Shearer region of $G_M$ (every induced subgraph has $Z > 0$). Outside that region the lemma is unproved.
+- Exact search (`ms_lemma_stress.py`, `ms_stress2.py`): 0 violations in 446 exactly-solved instances, but every instance with $\Phi(M) > 0$ that we could solve exactly was inside the Shearer region; an instance outside it with $\Phi > 0$ needs two coprime "negative blocks", which forces moduli far beyond exact range. Many equality cases $\Phi(M) = $ min uncovered proportion were found (the bound is tight).
+- For the application ($L = 6\,891\,885$, 160 divisors, $\Phi(D(L)) \approx 0.06$) membership in the Shearer region is **unverified**, and the LLL sufficient condition appears to fail there.
+
+Disposition: Milestone 4 is **deprioritised** — it rests on an unproved lemma whose natural proof route (Shearer) does not obviously cover the cases needed. Milestone 5 (BFF in Lean) is fully proved in prose and comes first.
+
 ## 4. What remains open (next steps, in order)
 
 1. Rebuild Schroeder's Lean package outside this sandbox and print its axioms (decides the framing of everything).

@@ -1,0 +1,206 @@
+\documentclass[11pt]{article}
+
+\usepackage[margin=1in]{geometry}
+\usepackage{amsmath,amssymb,amsthm,mathtools}
+\usepackage{microtype}
+\usepackage[hidelinks]{hyperref}
+\usepackage{enumitem}
+\usepackage{booktabs}
+
+\newtheorem{theorem}{Theorem}
+\newtheorem{proposition}[theorem]{Proposition}
+\newtheorem{lemma}[theorem]{Lemma}
+\newtheorem{corollary}[theorem]{Corollary}
+\theoremstyle{definition}
+\newtheorem{definition}[theorem]{Definition}
+\newtheorem{example}[theorem]{Example}
+\theoremstyle{remark}
+\newtheorem{remark}[theorem]{Remark}
+\newtheorem{question}[theorem]{Question}
+
+\newcommand{\Z}{\mathbb{Z}}
+\newcommand{\Q}{\mathbb{Q}}
+\newcommand{\lcm}{\operatorname{lcm}}
+\newcommand{\moniker}[1]{\textup{(#1)}}
+\newcommand{\lean}[1]{\texttt{#1}}
+\DeclareMathOperator{\rad}{rad}
+
+\title{A tower sieve certificate for the least common multiple of an odd covering system, checked in Lean}
+\author{Ryan Wu \and Claude Fable 5.1}
+\date{November 2026 (draft v0.1)}
+
+\begin{document}
+\maketitle
+
+\begin{abstract}
+A covering system is a finite family of residue classes whose union is $\Z$. Erd\H{o}s and Selfridge asked whether one can have all moduli odd, distinct, and greater than one; the question is open. We give an elementary necessary condition on the least common multiple $L$ of the moduli: after removing one residue class for each prime-power modulus $p^j \mid L$, the surviving residues form a Chinese-remainder product set $U$, and a union bound over the classes with composite moduli, counted inside $U$, gives an explicit rational $T(L)$ with $T(L) \ge 1$ whenever $L$ is the lcm of a covering with distinct moduli. The inequality is sharp at $L = 12$ and $L = 80$. We prove in Lean~4 (Mathlib) that the certificate is sound, and by evaluating it we certify that every odd distinct covering system has $L > 10^5$ with the proof kernel alone and $L > 6\,891\,884$ using compiled evaluation. We show the certificate sharpens the 1986 condition of Berger, Felzenbaum and Fraenkel, which is its exponent-free limit, and we place it against the recent preprints of Mian--Siddique, Hackmon, McNew--Setty and Schroeder, stating for each claim whether it is proved, machine-checked, numerical, or unchecked.
+\end{abstract}
+
+\section{The question, and a twelve-line example}\label{sec:intro}
+
+Can the integers be covered by finitely many arithmetic progressions with pairwise distinct odd differences? Nobody knows. With even differences allowed the answer is yes, and the smallest example is as old as the subject:
+\[
+0 \ (\bmod\ 2),\quad 0 \ (\bmod\ 3),\quad 1 \ (\bmod\ 4),\quad 1 \ (\bmod\ 6),\quad 11 \ (\bmod\ 12),
+\]
+which covers $\Z$ with moduli dividing $12$. Odd moduli resist. The sum of reciprocals of the moduli must be at least $1$ (each class has density $1/m$), so $\sum_{d \mid L, d > 1} 1/d \ge 1$ for the lcm $L$: $L$ must be \emph{abundant} or perfect, and the least odd such number is $945$. This is the only obstruction that uses no structure at all, and it is far from the truth.
+
+A \textbf{covering system} is a finite family $\{a_i \ (\bmod\ m_i)\}$ with $\bigcup_i (a_i + m_i\Z) = \Z$; it is \textbf{distinct} if the $m_i$ are pairwise different, and \textbf{odd} if every $m_i$ is odd. Moduli are always $> 1$. We write $L = \lcm(m_1, \dots, m_k)$ and say $L$ is a \textbf{covering number} if some distinct covering system has lcm $L$ (equivalently, has all moduli among the divisors of $L$). Erd\H{o}s and Selfridge's question is whether an odd covering number exists.
+
+\begin{question}[Erd\H{o}s--Selfridge; Erd\H{o}s Problem 7]
+Is there a distinct covering system all of whose moduli are odd?
+\end{question}
+
+We do not answer it. We prove, with every step of the mathematics checked by the Lean proof kernel, that an odd covering number would have to be large, and we say precisely how large and under which trust assumptions. The proof is a sieve so simple that a proof kernel can evaluate it a few hundred thousand times.
+
+Here is the idea on $L = 12$. The moduli $2, 4$ each occur at most once, so their two classes remove at most $2 + 1 = 3$ of the $4$ residues modulo $4$, leaving at least $u_2 = 1$; the modulus $3$ removes one of three residues, leaving $u_3 = 2$. By the Chinese remainder theorem the residues modulo $12$ that survive both form a product set $U$ of size at least $1 \cdot 2 = 2$. Every point of $U$ must be covered by a class with composite modulus, here $6$ or $12$. A class modulo $6$ meets $U$ in at most $\min(2, 1)\cdot\min(1, 2) = 1$ point; a class modulo $12$ in at most $1$. So two composite classes can cover at most $2$ points, which is exactly $|U|$: the bound is $T(12) = 1/1 \cdot 1/2 + 1/1 \cdot 1/2 = 1$, and the example above shows it is attained. Had $T(12)$ come out below $1$, there would be no covering with lcm $12$. That is the whole method.
+
+\paragraph{Section~\ref{sec:certificate}: the certificate.} The sieve above, written for general $L$, is the tower certificate $T(L)$; its cruder cousin, the $\varphi$-certificate, sieves only the prime moduli. Both are proved.
+
+\paragraph{Section~\ref{sec:bff}: what it sharpens.} Letting every exponent go to infinity turns $T(L) < 1$ into the condition of Berger, Felzenbaum and Fraenkel. So the certificate is the finite form of a thirty-year-old criterion, and Hackmon's recent four-prime theorem is the same criterion at $\{3,5,7,11\}$.
+
+\paragraph{Section~\ref{sec:lean}: what is checked.} The Lean development, the four certified theorems, and what each trusts.
+
+\paragraph{Section~\ref{sec:context}: where this sits.} Prior and concurrent work, including a Zenodo preprint claiming a bound $1400$ times larger than ours, which we have not been able to rebuild, and the inclusion--exclusion lemma of McNew--Setty, which has no written proof.
+
+\section{The certificate}\label{sec:certificate}
+
+Fix $L = \prod_p p^{e_p}$. For each prime $p \mid L$ put
+\[
+u_p \;=\; p^{e_p} - \bigl(1 + p + \dots + p^{e_p - 1}\bigr),
+\]
+the number of residues modulo $p^{e_p}$ that are guaranteed to survive when one class modulo $p^{e_p - j}$ is removed for each $j = 0, \dots, e_p - 1$ (a class modulo $p^{e_p-j}$ is $p^{j}$ residues modulo $p^{e_p}$). Note $u_p \ge p^{e_p}(p-2)/(p-1)$. Write $v_p(d)$ for the exponent of $p$ in $d$ and $\omega(d)$ for the number of distinct primes dividing $d$.
+
+\begin{definition}[Tower sum]
+\[
+T(L) \;=\; \sum_{\substack{d \mid L \\ \omega(d) \ge 2}}\ \prod_{p \mid L} \frac{\min\!\bigl(p^{\,e_p - v_p(d)},\ u_p\bigr)}{u_p}.
+\]
+\end{definition}
+
+In words: for each composite divisor $d$, and each prime $p$, take the fraction of the surviving residues modulo $p^{e_p}$ that one class modulo $p^{v_p(d)}$ can hit, and multiply over primes. For $p \nmid d$ the factor is $\min(p^{e_p}, u_p)/u_p = 1$, so only primes dividing $d$ contribute.
+
+\begin{theorem}[\moniker{Tower certificate}]\label{thm:tower}
+If $L$ is the lcm of a covering system with distinct moduli $> 1$, then $T(L) \ge 1$.
+\end{theorem}
+
+\begin{proof}
+Reduce all classes modulo $L$; the family covers $\Z/L$.
+
+\emph{Step 1: sieve the towers.} For each $p \mid L$ the moduli $p, p^2, \dots, p^{e_p}$ each occur at most once. Their classes remove at most $p^{e_p-1} + \dots + 1$ residues modulo $p^{e_p}$, so some set $A_p \subseteq \Z/p^{e_p}$ with $|A_p| \ge u_p$ is disjoint from all of them. Let $U$ be the set of $n \in \Z/L$ with $n \bmod p^{e_p} \in A_p$ for every $p$. By the Chinese remainder theorem $|U| = \prod_p |A_p|$, and every point of $U$ is covered by some class whose modulus $d$ has $\omega(d) \ge 2$.
+
+\emph{Step 2: count one composite class inside $U$.} Fix $c \ (\bmod\ d)$ with $d \mid L$. A point $n \in U$ lies in it exactly when, for every $p$, the residue $n \bmod p^{e_p}$ lies in $A_p$ and is $\equiv c \pmod{p^{v_p(d)}}$. These conditions are independent across primes, so
+\[
+\bigl|\{c \bmod d\} \cap U\bigr| \;=\; \prod_p \bigl|\{x \in A_p : x \equiv c \ (\bmod\ p^{v_p(d)})\}\bigr| \;\le\; \prod_p \min\!\bigl(p^{\,e_p - v_p(d)},\ |A_p|\bigr),
+\]
+because a class modulo $p^{v_p(d)}$ has $p^{e_p - v_p(d)}$ elements modulo $p^{e_p}$.
+
+\emph{Step 3: union bound, then normalise.} The composite classes cover $U$, so $|U| \le \sum_{\omega(d) \ge 2} |\{c_d\} \cap U|$. Divide by $|U| = \prod_p |A_p|$ and use that $s \mapsto \min(a,s)/s$ is non-increasing together with $|A_p| \ge u_p$:
+\[
+1 \;\le\; \sum_{\omega(d)\ge 2}\ \prod_p \frac{\min(p^{e_p - v_p(d)}, |A_p|)}{|A_p|} \;\le\; \sum_{\omega(d)\ge 2}\ \prod_p \frac{\min(p^{e_p - v_p(d)}, u_p)}{u_p} \;=\; T(L). \qedhere
+\]
+\end{proof}
+
+The same argument with only the prime moduli sieved (take $A_p$ to be the complement of one class modulo $p$, so $|A_p| = \varphi(p^{e_p})$) gives a weaker but even simpler statement, since then the ratio in Step 3 collapses: for $p \mid d$ the $p$-factor is at most $p^{e_p - v_p(d)}/\bigl(p^{e_p-1}(p-1)\bigr) = 1/\bigl(p^{v_p(d)-1}(p-1)\bigr)$, and the product over $p \mid d$ is $1/\varphi(d)$.
+
+\begin{theorem}[\moniker{$\varphi$-certificate}]\label{thm:phi}
+If $L$ is a covering number then $\sum_{d \mid L,\ d \text{ composite}} 1/\varphi(d) \ge 1$.
+\end{theorem}
+
+For squarefree $L$ the two certificates coincide; in general Theorem~\ref{thm:tower} is at least as strong.
+
+\begin{example}[Sharpness]
+$T(12) = 1$ (computed above) and $T(80) = 1$; both $12$ and $80$ are covering numbers. So no constant below $1$ can replace the $1$ in Theorem~\ref{thm:tower}.
+\end{example}
+
+\begin{example}[Where each certificate first fails on odd numbers]
+Scanning odd non-deficient $L$ in increasing order, the $\varphi$-certificate first fails to exclude $675\,675 = 3^3\cdot 5^2\cdot 7\cdot 11\cdot 13$, and the tower certificate first fails at
+\[
+6\,891\,885 = 3^4 \cdot 5 \cdot 7 \cdot 11 \cdot 13 \cdot 17, \qquad T = 1.0098\ldots
+\]
+These are numerical facts, cross-checked by two independent implementations (Python with exact rationals, and the Lean evaluation of Section~\ref{sec:lean}). Whether $6\,891\,885$ is a covering number is not known to us; the certificate simply says nothing about it.
+\end{example}
+
+\begin{remark}
+Theorem~\ref{thm:tower} is a first-order union bound inside $U$. It ignores that two composite classes overlap. We tested numerically the natural refinement, a pairwise-coprime inclusion--exclusion inside $U$ in the manner of McNew--Setty; it excludes $6\,891\,885$ and first fails at $11\,486\,475 = 3^3\cdot 5^2\cdot 7\cdot 11\cdot 13\cdot 17$, which is also where McNew--Setty's own inequality first fails on odd numbers. We have not proved the refinement; see Section~\ref{sec:context}.
+\end{remark}
+
+\section{What the certificate sharpens}\label{sec:bff}
+
+Berger, Felzenbaum and Fraenkel proved in the 1980s that the primes dividing a covering number $N$ satisfy
+\begin{equation}\label{eq:bff}
+\prod_{p \mid N} \frac{p-1}{p-2} \;-\; \sum_{p \mid N} \frac{1}{p-2} \;>\; 2 .
+\end{equation}
+This condition sees only the prime support, not the exponents. Our certificate sees both, and~\eqref{eq:bff} is what remains when the exponents are forgotten.
+
+\begin{proposition}[\moniker{Tower implies BFF}]\label{prop:bff}
+Let $P$ be the set of primes dividing $L$. Then
+\[
+T(L) \;\le\; \prod_{p \in P} \frac{p-1}{p-2} \;-\; 1 \;-\; \sum_{p \in P} \frac{1}{p-2}.
+\]
+Consequently, if $L$ is a covering number then~\eqref{eq:bff} holds with $\ge$.
+\end{proposition}
+
+\begin{proof}
+For $p \mid d$ with $v = v_p(d) \ge 1$, using $u_p \ge p^{e_p}(p-2)/(p-1)$,
+\[
+\frac{\min(p^{e_p - v}, u_p)}{u_p} \;\le\; \frac{p^{e_p - v}}{u_p} \;\le\; \frac{p-1}{p-2}\, p^{-v},
+\]
+and for $p \nmid d$ the factor is $1$. Group the composite divisors by their support $S \subseteq P$, $|S| \ge 2$, and sum the geometric series in each exponent:
+\[
+T(L) \;\le\; \sum_{|S| \ge 2}\ \prod_{p \in S} \frac{p-1}{p-2} \sum_{v=1}^{e_p} p^{-v}
+\;\le\; \sum_{|S| \ge 2}\ \prod_{p \in S} \frac{p-1}{p-2}\cdot\frac{1}{p-1}
+\;=\; \sum_{|S| \ge 2}\ \prod_{p \in S} \frac{1}{p-2}.
+\]
+Finally $\sum_{S \subseteq P} \prod_{p\in S} \frac1{p-2} = \prod_{p\in P}\bigl(1 + \frac1{p-2}\bigr)$, and removing the terms with $|S| \le 1$ gives the claim.
+\end{proof}
+
+Two readings. First, the certificate is strictly stronger than~\eqref{eq:bff}: for $P = \{3,5,7,11,13\}$ the left side of~\eqref{eq:bff} is $2.14$, so BFF excludes nothing with that support, while $T(L) < 1$ for every odd $L$ below $6\,891\,885$ (Section~\ref{sec:lean}), and in particular for every $L = 3^a 5^b 7^c 11^d 13^e$ in that range. Second, Hackmon's ``weight function'' theorem (no odd covering supported on four primes, with ratio $41/45$ for $\{3,5,7,11\}$) is~\eqref{eq:bff} at that prime set: $\prod \frac{p-1}{p-2} - 1 - \sum\frac{1}{p-2} = \frac{32}{9} - 1 - \frac{74}{45} = \frac{41}{45}$. His argument and ours are the same sieve; his bound uses the limiting factor $(p-2)/(p-1)$ in place of $u_p/p^{e_p}$. The exponent-free bound~\eqref{eq:bff} forces only $\omega(L) \ge 5$ for odd coverings.
+
+\section{What is checked, and what each theorem trusts}\label{sec:lean}
+
+Everything in Sections~\ref{sec:certificate} and~\ref{sec:bff} except Proposition~\ref{prop:bff} is formalised in Lean~4 against Mathlib (toolchain \lean{v4.22.0}); Proposition~\ref{prop:bff} is proved above in prose only. The development is in the repository's \lean{lean/Covering/} directory.
+
+\paragraph{Statement.} A covering of $\Z$ is a list of classes \lean{Cls r d}; \lean{IsCovering L S} packages: all moduli divide $L$, are $> 1$, are pairwise distinct, and the classes cover \lean{range L}. The bridge lemma \lean{isCovering\_lcm} passes from a covering of $\Z$ with distinct moduli $> 1$ to \lean{IsCovering} at $L = \lcm$ of the moduli, and \lean{lcm\_odd} records that the lcm of odd numbers is odd.
+
+\paragraph{The two inequalities.} \lean{one\_le\_towerSum} and \lean{one\_le\_phiSum} are Theorems~\ref{thm:tower} and~\ref{thm:phi}. The CRT product count of Step 2 is \lean{card\_cls\_inter\_prodSet}, proved for arbitrary allowed residue sets by induction over the prime set. Their axioms are \lean{propext}, \lean{Classical.choice}, \lean{Quot.sound}: the standard three.
+
+\paragraph{Decidable certificate.} \lean{towerSum L} is defined with Mathlib's \lean{Nat.divisors} and \lean{primeFactors}, which a kernel cannot evaluate quickly. We therefore define a second, list-based evaluator (verified $\sqrt L$ divisor enumeration, trial-division primality, $p$-adic valuation by repeated division) and prove it equal to the Mathlib expression, so that \lean{towerCheck L = true} implies $T(L) < 1$ by \lean{no\_covering\_of\_towerSum}. A chunked scan \lean{scanChunk2 lo cnt} checks every odd $L$ in a range, with an append lemma to glue chunks.
+
+\paragraph{Results.} Let $\mathcal{C}$ be any odd distinct covering of $\Z$ with moduli $> 1$ and $L$ its lcm.
+
+\begin{center}
+\begin{tabular}{@{}llll@{}}
+\toprule
+Theorem & Statement & Evaluation & Axioms \\
+\midrule
+\lean{odd\_covering\_lcm\_gt\_100000} & $L > 10^5$ & \lean{decide +kernel} & standard three \\
+\lean{odd\_covering\_lcm\_gt\_675674} & $L > 675\,674$ & \lean{native\_decide} & $+\,$\lean{Lean.ofReduceBool} \\
+\lean{odd\_covering\_lcm\_gt\_1000000} & $L > 10^6$ & \lean{native\_decide} & $+\,$\lean{Lean.ofReduceBool} \\
+\lean{odd\_covering\_lcm\_gt\_6891884} & $L > 6\,891\,884$ & \lean{native\_decide} & $+\,$\lean{Lean.ofReduceBool} \\
+\bottomrule
+\end{tabular}
+\end{center}
+
+\noindent ``Standard three'' means the kernel checked the arithmetic itself; \lean{Lean.ofReduceBool} means the scan was run by the compiled evaluator and the kernel trusts the compiler's answer. The first row is the largest kernel-only exclusion we know of; the previous certified bound was $L > 10^4$ (Mian--Siddique, July 2026), whose prime-only CRT certificate stalls at $10\,395$ and whose authors name ``charging prime-power towers'' as the needed refinement, which is what $T(L)$ does. At the time of writing the first and last rows are still compiling; the middle two are complete.
+
+\paragraph{Cost.} A kernel check of one $L$ near $10^5$ takes about a second; $500$ values per file keeps memory bounded. The compiled evaluator does $40\,000$ values in $2.5$ minutes; the full scan to $6.9\cdot 10^6$ is about seven CPU-hours.
+
+\section{Where this sits}\label{sec:context}
+
+We checked the literature on 2~November~2026 (SciSpace and alphaXiv; Elicit's API was not available to us) and list every item that bears on the claims above, with its status.
+
+\begin{description}[leftmargin=1.5em]
+\item[Density bound (folklore; Rafik, Zenodo, Jan.~2026).] $\sum_{d\mid L, d>1} 1/d \ge 1$, hence odd $L \ge 945$. Strictly weaker than Theorem~\ref{thm:phi}.
+\item[Berger--Felzenbaum--Fraenkel (1986--88).] Condition~\eqref{eq:bff}. Recovered as the exponent-free limit of Theorem~\ref{thm:tower} (Proposition~\ref{prop:bff}).
+\item[Simpson--Zeilberger (1991), Guo--Sun (2005), BBMST (2022).] Squarefree odd case: lcm needs $\ge 18$, then $\ge 22$ primes; then impossible. Our scans concern arbitrary exponents, where the problem is open.
+\item[Hough--Nielsen (2019).] Every distinct covering has a modulus divisible by $2$ or $3$, so $3 \mid L$ for an odd covering. Used implicitly: our scans range over all odd $L$, so nothing is assumed.
+\item[McNew--Setty (arXiv 2507.23041).] Classify covering numbers to $10^6$ with a MIP solver. Their Lemma~4.10 bounds the covered proportion by $\sum_{S \text{ pairwise coprime}} (-1)^{|S|+1}/\lcm S$, with the proof indicated as ``follows likewise by inclusion--exclusion''. \emph{Status: unproved in writing.} The inequality is not pointwise: for moduli $\{2,4,3,9\}$ with nested classes, a point in all four classes contributes $1-4+4 = 1$ to the alternating count of covered points where at most $1$ is allowed, but $0$ to the uncovered side, so any proof must average. It is a Shearer-type bound: pairwise-coprime subsets are the independent sets of the ``share a prime'' graph, and Shearer's theorem proves the lemma whenever $(1/m)_m$ lies in the Shearer region of that graph. We found no counterexample in $446$ exactly solved instances, with many cases of equality, but every solvable instance was inside the Shearer region; whether $D(6\,891\,885)$ is inside it we do not know. On odd numbers the lemma, if true, first fails at $11\,486\,475$.
+\item[Mian--Siddique (arXiv 2607.25628, July 2026).] $L > 10^4$ in Lean, prime-only CRT certificate. Superseded by the first row of the table.
+\item[Hackmon (Zenodo, Apr.~2026).] The tower sieve with the limiting factor, per prime support; four-prime theorem. Same method, seven months earlier, not formalised; equals~\eqref{eq:bff} at $\{3,5,7,11\}$ by Proposition~\ref{prop:bff}.
+\item[Schroeder (Zenodo, Sept.~2026).] Claims $\omega(L) \ge 9$ for every odd distinct covering, hence $L \ge 9\,704\,539\,845$, with a Lean~4 package (toolchain \lean{v4.32.0-rc1}; no \lean{sorry} or \lean{native\_decide} found by inspection; standard definition of an odd distinct covering). \emph{Status: unchecked.} We could not rebuild the package in our environment. If it holds, it supersedes our numerical bounds by a factor of about $1400$; the elementary certificate and the kernel-only check retain independent interest, and its own Corollary~1.3 uses the squarefree case of Theorem~\ref{thm:phi}.
+\end{description}
+
+\paragraph{What is next.} In order: rebuild Schroeder's package and print its axioms; formalise Proposition~\ref{prop:bff}, which turns one finite check into an exclusion for all exponents over a prime set; then decide whether McNew--Setty's lemma can be proved at the configurations needed, since every first-order sieve we know ends at $11\,486\,475$ and going further needs the prime-by-prime distorted sieve of Hough and of Balister, Bollob\'as, Morris, Sahasrabudhe and Tiba.
+
+\paragraph{Reproducibility.} Repository: \url{https://github.com/rw762-sketch/Open-Math-problem}. \lean{lake build} rebuilds the Lean development from the Mathlib cache; \lean{lake env lean Covering/Axioms.lean} prints the axioms of each headline theorem; \lean{tower\_certificate.py N} and \lean{phi\_certificate.py N} are the independent Python scans.
+
+\end{document}
