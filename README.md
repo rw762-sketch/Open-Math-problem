@@ -1,8 +1,16 @@
 # The φ-certificate for odd covering systems — Lean-verified exclusion bounds
 
+*Ryan Wu and Claude Fable 5.1 · November 2026 · Status: problem **open**; results below as stated.*
+*Pages: [problem statement](docs/PROBLEM.md) · [progress report with prose proofs and claims ledger](docs/PROGRESS.md) · [references](docs/references/) · [milestones](MILESTONES.md).*
+
 **Problem.** Erdős–Selfridge (Erdős #7): does there exist a covering system of ℤ whose moduli
 are odd, distinct and > 1? Open. This repo proves, with the Lean 4 kernel checking every step
 of the mathematics, that any such system must have a *large* lcm of moduli.
+
+**Literature caveat (2 Nov 2026).** The tower-sieve idea appears independently in Hackmon
+(Zenodo, Apr 2026, per prime support, not formalized), and Schroeder (Zenodo, Sep 2026) *claims*
+lcm ≥ 9 704 539 845 with a Lean package that we have not yet rebuilt. See
+[docs/PROGRESS.md §3](docs/PROGRESS.md) for exactly what this changes.
 
 ## Results
 
