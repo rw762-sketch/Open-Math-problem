@@ -20,9 +20,10 @@ Context. Previous *certified* bound: lcm `> 10⁴` (Mian–Siddique, arXiv 2607.
 whose prime-only CRT certificate stalls at `10395, 12285, 17325`; they name "charging prime-power
 towers" as the needed fix, which is what the tower certificate does. McNew–Setty (arXiv 2507.23041)
 classify covering numbers to `10⁶` with a MIP solver; their inclusion–exclusion inequality (their
-eq. (10)) is, numerically, a stronger necessary condition than the tower certificate on odd numbers
-and would informally exclude odd covering numbers further still, but no odd bound is stated there
-and nothing is machine-checked. So the contribution here is (i) a clean elementary sieve
+eq. (10)) is, numerically, a stronger necessary condition than the tower certificate on odd numbers:
+evaluated on odd non-deficient numbers it first fails at `11486475 = 3³·5²·7·11·13·17` (our
+`tower_certificate.py` comparison), so it would informally give lcm `> 11486474`, but no odd bound is
+stated there and nothing is machine-checked. So the contribution here is (i) a clean elementary sieve
 certificate that is cheap for a proof kernel to evaluate, (ii) the first formally verified exclusion
 bound past `10⁶`, and (iii) a 10× improvement of the kernel-only bound.
 
