@@ -32,6 +32,18 @@ and the union bound over the composite $d$ gives $\sum_{d \text{ composite}} 1/\
 
 *Sharpness.* $T(12) = 1$ and $T(80) = 1$, and both are covering numbers, so the inequality cannot be improved by a constant.
 
+**The tower certificate sharpens Berger–Felzenbaum–Fraenkel.** Let $P$ be the set of primes dividing $L$. Then
+
+$$T(L) \ \le\ \prod_{p \in P}\frac{p-1}{p-2} \;-\; 1 \;-\; \sum_{p\in P}\frac{1}{p-2},$$
+
+so the classical BFF condition "$\prod_{p \mid L}\frac{p-1}{p-2} - \sum_{p \mid L}\frac1{p-2} \ge 2$ for every covering number $L$" is the exponent‑free limit of the tower certificate, and Hackmon's four‑prime theorem (his $R = 41/45$ for $\{3,5,7,11\}$) is this inequality evaluated at that prime set. (Status: **proved** in prose here; Lean formalization is Milestone 5.)
+
+*Proof.* Since $u_p = p^{e_p} - \frac{p^{e_p}-1}{p-1} \ge p^{e_p}\frac{p-2}{p-1}$, for $p \mid d$ the factor satisfies $\frac{\min(p^{e_p - v}, u_p)}{u_p} \le \frac{p^{e_p-v}}{u_p} \le \frac{p-1}{p-2}\,p^{-v}$, and for $p \nmid d$ it equals $1$. Group the divisors $d$ by their support $S \subseteq P$, $|S| \ge 2$, and sum the geometric series over each exponent $v \in [1, e_p]$:
+$$T(L) \le \sum_{|S|\ge 2}\ \prod_{p\in S}\frac{p-1}{p-2}\sum_{v=1}^{e_p} p^{-v} \ \le\ \sum_{|S| \ge 2}\ \prod_{p \in S}\frac{p-1}{p-2}\cdot\frac{1}{p-1} \ =\ \sum_{|S| \ge 2}\ \prod_{p\in S}\frac{1}{p-2},$$
+and $\sum_{S \subseteq P} \prod_{p \in S} \frac1{p-2} = \prod_{p \in P}\bigl(1 + \frac1{p-2}\bigr)$; removing the terms $|S| \le 1$ gives the claim. $\square$
+
+Consequences: the per‑$L$ certificate is strictly stronger than BFF (e.g. BFF cannot exclude $L = 3^a 5^b 7^c 11^d 13^e$ for any exponents since $\prod - \sum = 2.14$, while $T(L) < 1$ for all such $L$ below $6\,891\,885$), and BFF alone gives only $\omega(L) \ge 5$ for odd coverings.
+
 ## 2. Claims ledger
 
 | # | Claim | Disposition | Where |
