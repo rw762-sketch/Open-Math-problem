@@ -1,0 +1,5 @@
+name = "covering"
+defaultTargets = ["Covering"]
+
+[[lean_lib]]
+name = "Covering"

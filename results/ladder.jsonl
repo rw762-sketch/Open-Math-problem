@@ -1,0 +1,7 @@
+{"L": 315, "K": 9, "T": 2, "budget": 300000, "secs": 1.2, "result": "UNSAT"}
+{"L": 495, "K": 9, "T": 2, "budget": 300000, "secs": 0.9, "result": "UNSAT"}
+{"L": 945, "K": 9, "T": 2, "budget": 300000, "secs": 10.4, "result": "UNKNOWN"}
+{"L": 1485, "K": 9, "T": 2, "budget": 300000, "secs": 11.7, "result": "UNKNOWN"}
+{"L": 1575, "K": 9, "T": 2, "budget": 300000, "secs": 14.2, "result": "UNKNOWN"}
+{"L": 1755, "K": 9, "T": 2, "budget": 300000, "secs": 13.1, "result": "UNKNOWN"}
+{"L": 2205, "K": 9, "T": 2, "budget": 300000, "secs": 15.3, "result": "UNKNOWN"}
