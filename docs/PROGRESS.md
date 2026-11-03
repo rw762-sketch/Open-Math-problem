@@ -94,8 +94,8 @@ Four facts, each a one-line check.
 | 11 | Tower ⇒ BFF, and the four-prime theorem for $\{3,5,7,11\}$ | **proved** (kernel, standard axioms) | `BFF.lean` |
 | 12 | Every odd distinct covering has $\ge 5$ distinct primes in its lcm (`five_primes_of_odd_covering`) | **proved** (kernel, standard axioms) | `FourPrimes.lean` |
 | 15 | Prime replacement for arbitrary exponents (`replace_one`, `reduce_to_shaped`) | **proved** (kernel, standard axioms) | `Replace.lean`, `Shaped.lean` |
-| 13 | Distorted tower certificate ($\eta < 1$ ⇒ no covering with lcm $L$) | **proved in prose** (§1b); Lean pending | `hybrid_fast.py` |
-| 14 | Odd covering ⇒ lcm $\ge 1\,527\,701\,175$ | **numerical**, certificates rechecked exactly (rests on 13); Lean pending | `hybrid_scan.py`, `verify_hybrid_exact.py` |
+| 13 | Distorted tower certificate ($\eta < 1$ ⇒ no covering with lcm $L$) | **proved** (prose §1b; Lean kernel `Hybrid.one_le_eta`, standard axioms) | `Hybrid/` |
+| 14 | Odd covering ⇒ lcm $\ge 1\,527\,701\,175$ | **proved, kernel only** (`odd_covering_lcm_gt_1527701174`, standard axioms): prime replacement + 1638 explicit certificates | `HybridScan/`, `gen_lean_certs.py` |
 | 10 | $t_9 \le 2$ (modulus 9 used twice) has no covering with $L = 945$ | **numerical** (CaDiCaL UNSAT, 557 s; not independently certified) | `search.py`, `verify.py` |
 
 ## 3. Literature check (SciSpace, 2 Nov 2026) and what it changes

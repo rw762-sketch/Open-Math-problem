@@ -4,16 +4,12 @@ import Covering.Count
 import Covering.Phi
 import Covering.Fast
 import Covering.Check
-import Covering.Probe
-import Covering.ScanN
-import Covering.ScanK.All
-import Covering.Axioms
 import Covering.Product
 import Covering.Tower
 import Covering.TowerCheck
+import Covering.Probe
 import Covering.Probe3
-import Covering.ScanT.All1M
-import Covering.ScanT.AllFull
+import Covering.ScanN
 import Covering.BFF
 import Covering.FourPrimes
 import Covering.Replace
@@ -23,3 +19,6 @@ import Covering.ShapedK6.All
 import Covering.Hybrid.Fibre
 import Covering.Hybrid.Nu
 import Covering.Hybrid.Main
+import Covering.Hybrid.Check
+import Covering.HybridScan.All
+import Covering.Axioms

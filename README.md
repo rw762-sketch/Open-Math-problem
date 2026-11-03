@@ -1,4 +1,4 @@
-# The φ-certificate for odd covering systems — Lean-verified exclusion bounds
+# Odd covering systems: a distorted tower sieve, checked in Lean
 
 *Ryan Wu and Claude Fable 5.1 · November 2026 · Status: problem **open**; results below as stated.*
 *Pages: [problem statement](docs/PROBLEM.md) · [progress report with prose proofs and claims ledger](docs/PROGRESS.md) · [references](docs/references/) · [milestones](MILESTONES.md).*
@@ -7,7 +7,16 @@
 are odd, distinct and > 1? Open. This repo proves, with the Lean 4 kernel checking every step
 of the mathematics, that any such system must have a *large* lcm of moduli.
 
-**New (2 Nov 2026): distorted tower sieve.** Combining the tower conditioning with the Balister–Bollobás–Morris–Sahasrabudhe–Tiba distortion excludes every odd candidate below **1 527 701 175** (certificates checked in exact arithmetic; validity proved in prose, Lean pending). See [docs/PROGRESS.md §1b](docs/PROGRESS.md).
+**Headline (2 Nov 2026).** `odd_covering_lcm_gt_1527701174`: **every covering system of ℤ with
+odd, distinct moduli `> 1` has lcm of moduli `≥ 1 527 701 175`.** Checked by the Lean kernel alone
+(axioms `propext, Classical.choice, Quot.sound`; no `native_decide`, no `sorry`); the full library
+builds from scratch in about 7 minutes. The proof combines three pieces, all formalized here:
+(1) **prime replacement** for arbitrary exponents, which reduces any odd covering to one whose
+lcm is `3^a 5^b 7^c ⋯` with an initial run of odd primes; (2) the **distorted tower certificate**,
+which at each prime conditions on the complement of the prime-power classes and then applies
+the Balister–Bollobás–Morris–Sahasrabudhe–Tiba distortion to the mixed classes; (3) an explicit
+certificate for each of the 1638 initial-run moduli below the bound. See
+[docs/PROGRESS.md §1b](docs/PROGRESS.md).
 
 **Literature caveat (2 Nov 2026).** The tower-sieve idea appears independently in Hackmon
 (Zenodo, Apr 2026, per prime support, not formalized), and Schroeder (Zenodo, Sep 2026) *claims*
@@ -18,13 +27,17 @@ lcm ≥ 9 704 539 845 with a Lean package that we have not yet rebuilt. See
 
 | Theorem (`lean/Covering/`) | Statement | Trusted base |
 |---|---|---|
-| `one_le_phiSum` (Phi.lean) | φ-certificate inequality (below) | kernel; axioms `propext, Classical.choice, Quot.sound` |
-| `one_le_towerSum` (Tower.lean) | tower-certificate inequality (below) | same |
-| `no_covering_of_check`, `no_covering_of_towerCheck` | decidable certificates exclude `L` | same |
-| `odd_covering_lcm_gt_100000` (ScanK/) | odd covering ⇒ lcm `> 10⁵` | **kernel only** (`decide +kernel`) |
-| `odd_covering_lcm_gt_675674` (ScanN.lean) | odd covering ⇒ lcm `> 675674` | scan by `native_decide` (`Lean.ofReduceBool`) |
-| `odd_covering_lcm_gt_1000000` (ScanT/All1M.lean) | odd covering ⇒ lcm `> 10⁶` | scan by `native_decide` |
-| `odd_covering_lcm_gt_6891884_kernel` (ShapedK6/All.lean) | odd covering ⇒ lcm `> 6 891 884` | **kernel only**: prime replacement (`Replace.lean`) reduces to the 363 shaped moduli (`Shaped.lean`), each checked by `decide +kernel`; build < 4 min |
+| `odd_covering_lcm_gt_1527701174` (HybridScan/All.lean) | odd covering ⇒ lcm `> 1 527 701 174` | **kernel only**, standard axioms |
+| `Hybrid.one_le_eta` (Hybrid/Main.lean) | distorted tower certificate: a covering forces `η ≥ 1` | kernel, standard axioms |
+| `replace_one`, `reduce_to_shaped` (Replace.lean, Shaped.lean) | prime replacement, any exponents; reduction to initial-run lcm | kernel, standard axioms |
+| `five_primes_of_odd_covering` (FourPrimes.lean) | odd covering ⇒ at least 5 distinct primes divide the lcm | kernel, standard axioms |
+| `towerSum_le_bff`, `no_covering_3_5_7_11` (BFF.lean) | tower certificate ⇒ Berger–Felzenbaum–Fraenkel; four-prime theorem | kernel, standard axioms |
+| `odd_covering_lcm_gt_6891884_kernel` (ShapedK6/All.lean) | odd covering ⇒ lcm `> 6 891 884` (tower certificate only) | kernel, standard axioms |
+| `one_le_towerSum`, `one_le_phiSum` (Tower.lean, Phi.lean) | tower and φ-certificate inequalities | kernel, standard axioms |
+| `odd_covering_lcm_gt_675674` (ScanN.lean) | earlier brute-force scan, superseded | `native_decide` |
+
+The brute-force scans `ScanK/`, `ScanT/` are in `attic/` (superseded). Axiom report:
+`cd lean && lake env lean Covering/Axioms.lean`.
 
 Context. Previous *certified* bound: lcm `> 10⁴` (Mian–Siddique, arXiv 2607.25628, July 2026),
 whose prime-only CRT certificate stalls at `10395, 12285, 17325`; they name "charging prime-power

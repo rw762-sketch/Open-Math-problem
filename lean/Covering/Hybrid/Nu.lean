@@ -24,31 +24,31 @@ def Qs : List Stage → ℕ
 /-- `u = p^e − (1 + p + ⋯ + p^{e−1})`. -/
 def uS (s : Stage) : ℕ := s.p ^ s.e - ∑ j ∈ range s.e, s.p ^ j
 
-noncomputable def gS (s : Stage) (v : ℕ) : ℚ := ((min (s.p ^ (s.e - v)) (uS s) : ℕ) : ℚ) / (uS s : ℚ)
+def gS (s : Stage) (v : ℕ) : ℚ := ((min (s.p ^ (s.e - v)) (uS s) : ℕ) : ℚ) / (uS s : ℚ)
 
-noncomputable def cS (s : Stage) : ℚ := 1 / (1 - s.δ)
+def cS (s : Stage) : ℚ := 1 / (1 - s.δ)
 
-noncomputable def γS (s : Stage) (v : ℕ) : ℚ := if v = 0 then 1 else cS s * gS s v
+def γS (s : Stage) (v : ℕ) : ℚ := if v = 0 then 1 else cS s * gS s v
 
-noncomputable def GS (s : Stage) : ℚ := ∑ v ∈ Icc 1 s.e, gS s v
+def GS (s : Stage) : ℚ := ∑ v ∈ Icc 1 s.e, gS s v
 
-noncomputable def Pi1 : List Stage → ℚ
+def Pi1 : List Stage → ℚ
   | [] => 1
   | s :: rs => Pi1 rs * ∑ v ∈ range (s.e + 1), γS s v
 
-noncomputable def Pi2 : List Stage → ℚ
+def Pi2 : List Stage → ℚ
   | [] => 1
   | s :: rs => Pi2 rs * ∑ a ∈ range (s.e + 1), ∑ b ∈ range (s.e + 1), γS s (max a b)
 
-noncomputable def term (s : Stage) (P1 P2 : ℚ) : ℚ :=
+def term (s : Stage) (P1 P2 : ℚ) : ℚ :=
   if s.δ = 0 then GS s * (P1 - 1)
   else min (GS s * (P1 - 1)) (GS s ^ 2 * (P2 - 2 * P1 + 1) / (4 * s.δ * (1 - s.δ)))
 
-noncomputable def eta : List Stage → ℚ
+def eta : List Stage → ℚ
   | [] => 0
   | s :: rs => eta rs + term s (Pi1 rs) (Pi2 rs)
 
-noncomputable def nu : List Stage → ℕ → ℚ
+def nu : List Stage → ℕ → ℚ
   | [], _ => 1
   | s :: rs, m => nu rs m * γS s (m.factorization s.p)
 

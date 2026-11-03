@@ -16,7 +16,7 @@ Honest position after the check: the φ/tower certificate is a clean, elementary
 kernel-checkable condition and ours is the first kernel-only formalization of a sieve certificate
 for this problem, but it is no longer the strongest *claimed* bound. The write-up should say so.
 
-## Milestone 1 — close out the current Lean results ✅/🔄
+## Milestone 1 — close out the current Lean results ✅ (superseded by the kernel-only shaped route)
 - ✅ `one_le_phiSum`, `one_le_towerSum`, decidable certificates (kernel, standard axioms).
 - ✅ `odd_covering_lcm_gt_675674`, `odd_covering_lcm_gt_1000000` (`native_decide`).
 - 🔄 `odd_covering_lcm_gt_100000` kernel-only (ScanK, 79/165 chunks; ~1.5 min/chunk).
@@ -53,7 +53,8 @@ Outline:
 - ✅ Scan: every odd L ≤ 10¹⁰ with σ(L) ≥ 2L excluded except 20; first survivor **1 527 701 175 = 3³5²7²·11·13·17·19**. 1704 certificates + 220 near-boundary float decisions rechecked in exact arithmetic, 0 failures. ⇒ odd covering ⇒ lcm ≥ 1 527 701 175 (numerical, rests on the prose theorem).
 - ✅ Higher moments (k ≤ 4) give no gain; BBMST distortion alone stops at 11 486 475 too.
 - ✅ Prime replacement in Lean (any exponents) + shaped enumeration ⇒ `odd_covering_lcm_gt_6891884_kernel`, kernel only (supersedes the 7 CPU-hour native scan).
-- 🔄 Formalise the distorted tower certificate in Lean (measure-free version: weighted counting on Z/L with rational weights).
+- ✅ Distorted tower certificate in Lean (`Hybrid/`, `one_le_eta`): weighted counting on ℤ/Q, stage by stage.
+- ✅ **`odd_covering_lcm_gt_1527701174`: odd covering ⇒ lcm ≥ 1 527 701 175, kernel only** (1638 certificates, `HybridScan/`).
 - ⬜ Push past 1.53·10⁹: exact (non-union-bound) treatment of the first mixed stage {3,5}.
 - Only route to new numerical bounds past 11 486 475: prime-by-prime distorted sieve (Hough / BBMST) or Schroeder-style conditional reweighting. Research-level formalization; decide after Milestone 2.
 
