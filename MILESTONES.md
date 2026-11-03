@@ -19,9 +19,8 @@ for this problem, but it is no longer the strongest *claimed* bound. The write-u
 ## Milestone 1 — close out the current Lean results ✅ (superseded by the kernel-only shaped route)
 - ✅ `one_le_phiSum`, `one_le_towerSum`, decidable certificates (kernel, standard axioms).
 - ✅ `odd_covering_lcm_gt_675674`, `odd_covering_lcm_gt_1000000` (`native_decide`).
-- 🔄 `odd_covering_lcm_gt_100000` kernel-only (ScanK, 79/165 chunks; ~1.5 min/chunk).
-- 🔄 `odd_covering_lcm_gt_6891884` (ScanT, 90/173 chunks; ~2.5 min/chunk).
-- ⬜ Commit, regenerate `Axioms.lean` output, tag `v0.1`.
+- ~~`odd_covering_lcm_gt_100000` kernel-only (ScanK)~~ and ~~`odd_covering_lcm_gt_6891884` (ScanT)~~: brute-force scans stopped part-way, moved to `attic/`; superseded by the kernel-only shaped route (`ShapedK6/`, `HybridScan/`).
+- ✅ Axiom report in CI on every push (`.github/workflows/lean.yml`); generated certificate files reproducible (`gen_lean_files.py --check`).
 
 ## Milestone 2 — reproduce Schroeder's Lean package ⬜
 - Build `lean_proof.tar.xz` (Lean v4.32.0-rc1 + pinned mathlib) in a clean directory.

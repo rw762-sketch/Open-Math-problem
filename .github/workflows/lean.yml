@@ -12,6 +12,9 @@ jobs:
     steps:
       - uses: actions/checkout@v4
 
+      - name: Generated certificate files match their data
+        run: python3 gen_lean_files.py --check
+
       - name: Build the Lean development (Mathlib from cache)
         uses: leanprover/lean-action@v1
         with:
@@ -24,6 +27,7 @@ jobs:
       - name: Axiom report
         working-directory: lean
         run: |
+          set -o pipefail
           lake env lean Covering/Axioms.lean | tee axioms.txt
           if grep -q sorryAx axioms.txt; then echo "::error::a headline theorem depends on sorry"; exit 1; fi
           grep "odd_covering_lcm_gt_1527701174" axioms.txt | grep -q "\[propext, Classical.choice, Quot.sound\]" \

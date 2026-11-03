@@ -85,8 +85,8 @@ Four facts, each a one-line check.
 | 1 | Tower certificate inequality | **proved** (prose above; Lean kernel `one_le_towerSum`) | `lean/Covering/Tower.lean` |
 | 2 | φ-certificate inequality | **proved** (Lean kernel `one_le_phiSum`) | `lean/Covering/Phi.lean` |
 | 3 | Decidable checks `check`, `check2` are sound (divisor enumeration, trial division, valuations verified) | **proved** (kernel) | `Fast.lean`, `Check.lean`, `TowerCheck.lean` |
-| 4 | Odd covering ⇒ lcm $> 10^5$ | **proved, kernel only** (build 79/165 chunks at time of writing; earlier counts in this log double-counted files) | `ScanK/` |
-| 5 | Odd covering ⇒ lcm $> 675\,674$ and $> 10^6$ | **native** | `ScanN.lean`, `ScanT/All1M.lean` |
+| 4 | Odd covering ⇒ lcm $> 10^5$ | **superseded** by 6 and 14. The brute-force kernel scan was never completed (79/165 chunks built) and is no longer built | `attic/ScanK/` |
+| 5 | Odd covering ⇒ lcm $> 675\,674$ (`ScanN.lean`, built) and $> 10^6$ (`attic/ScanT/All1M.lean`, no longer built) | **native**; superseded by 6 and 14 | `ScanN.lean`, `attic/ScanT/` |
 | 6 | Odd covering ⇒ lcm $> 6\,891\,884$ | **proved, kernel only** (`odd_covering_lcm_gt_6891884_kernel`; standard axioms) via prime replacement + 363 shaped moduli; supersedes the native scan | `Replace.lean`, `Shaped.lean`, `ShapedK6/` |
 | 7 | First odd non-deficient $L$ with $S_\varphi(L) \ge 1$ is $675675 = 3^3 5^2 7\cdot 11\cdot 13$; with $T(L) \ge 1$ is $6891885 = 3^4 5\cdot 7\cdot 11\cdot 13\cdot 17$ | **numerical** (Python), and implied by 5–6 for the lower side | `phi_certificate.py`, `tower_certificate.py` |
 | 8 | Certificate never fires on an actual covering number (soundness cross-check, $L \le 240$, all moduli) | **numerical** | commit history |
@@ -101,7 +101,7 @@ Four facts, each a one-line check.
 ## 3. Literature check (SciSpace, 2 Nov 2026) and what it changes
 
 - The weight-region idea of Step 1 appears in Hackmon (Apr 2026) with the limiting factor $(p-2)/(p-1)$ and a prime-support (any exponents) conclusion for $\le 4$ primes; see [references/H26.md](references/H26.md). Our certificate is the exact finite-$L$ form, and the formalization is ours. The method should be credited as independently found there first.
-- Schroeder (Sep 2026) claims $\omega(L) \ge 9$ and $L \ge 9\,704\,539\,845$ with a Lean package; see [references/S26.md](references/S26.md). **Unchecked**: the package (no `sorry`, no `native_decide` found by grep; toolchain v4.32.0-rc1) could not be built in this environment, because executing downloaded code is blocked here. Until rebuilt, it is a claim, not a result we rely on. If it holds, claims 4–6 are superseded numerically; the elementary certificate and kernel-only check remain of independent interest.
+- Schroeder (Sep 2026) claims $\omega(L) \ge 9$ and $L \ge 9\,704\,539\,845$ with a Lean package; see [references/S26.md](references/S26.md). **Unchecked**: the package (no `sorry`, no `native_decide` found by grep; toolchain v4.32.0-rc1) could not be built in this environment, because executing downloaded code is blocked here. Until rebuilt, it is a claim, not a result we rely on. If it holds, claims 4–6 and 14 are superseded numerically; the elementary certificate and kernel-only check remain of independent interest.
 - The Zenodo note of Rafik (Jan 2026) states only the density condition ($L \ge 945$); see [references/R26.md](references/R26.md).
 - Mian–Siddique (Jul 2026): $L > 10^4$, Lean; McNew–Setty (2025): covering numbers to $10^6$, inclusion–exclusion inequality; see [references/MS26.md](references/MS26.md), [references/MS25.md](references/MS25.md).
 

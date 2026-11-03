@@ -73,28 +73,42 @@ union bound by `|U|` and use `min(a,s)/s ≤ min(a,u)/u` for `u ≤ s`.
 First odd non-deficient `L` not excluded: φ: `675675 = 3³·5²·7·11·13`; tower:
 `6891885 = 3⁴·5·7·11·13·17` (`T = 1.0098`).
 
-Lean files: `Count.lean` (CRT count over a prime set), `Product.lean` (general CRT product count
-with arbitrary allowed residues), `Phi.lean`, `Tower.lean` (the two inequalities), `Fast.lean`
-(verified √L divisor enumeration, trial-division primality), `Check.lean`, `TowerCheck.lean`
-(verified p-adic valuation, decidable certificates, bridge from coverings of ℤ to the lcm, odd lcm,
-tail-recursive chunked scanning), `ScanK/`, `ScanN.lean`, `ScanT/` (the scans).
+Lean files (`lean/Covering/`):
+- `Count.lean`, `Product.lean`: CRT counts over a prime set, with arbitrary allowed residues.
+- `Phi.lean`, `Tower.lean`: the φ- and tower-certificate inequalities.
+- `Fast.lean`, `Check.lean`, `TowerCheck.lean`: verified divisor enumeration, trial-division
+  primality and p-adic valuation; decidable certificates; bridge from coverings of ℤ to the lcm.
+- `BFF.lean`, `FourPrimes.lean`: tower ⇒ BFF, the four-prime theorem, `ω(lcm) ≥ 5`.
+- `Replace.lean`, `Shaped.lean`, `ShapedBound.lean`: prime replacement and the reduction to
+  initial-run (shaped) moduli.
+- `Hybrid/`: the distorted tower certificate (`Fibre`, `Nu`, `Main`: `one_le_eta`; `Check`: `hyb`).
+- `ShapedK6/`, `HybridScan/`: the certificate lists behind the two kernel-only bounds. The `L*.lean`
+  and `C*.lean` files are machine-written by `gen_lean_files.py`.
+- `ScanN.lean`: the old `native_decide` scan. `Test/`: control values (the classic covering of 12,
+  the first `L` each certificate cannot exclude).
 
 ## Beyond: what the next certificate would need
 
-Running the sieve and then McNew–Setty's pairwise-coprime inclusion–exclusion on the remaining
-classes (`combined_certificate.py`, not formalized, validity not yet proved) excludes
-`6891885` (`0.940`) but fails at `11486475 = 3³·5²·7·11·13·17` (`1.011`), exactly where
-McNew–Setty's own inequality fails. First-order sieve bounds of this kind appear to end there; going
-further needs the prime-by-prime distorted sieve of Hough / Balister–Bollobás–Morris–
-Sahasrabudhe–Tiba, which is a research-level formalization.
+First-order sieve bounds (the tower certificate; the sieve followed by McNew–Setty's pairwise-coprime
+inclusion–exclusion in `combined_certificate.py`) stop at `11486475 = 3³·5²·7·11·13·17`. The
+distorted tower certificate gets past that wall, and is what the headline uses. It in turn fails on
+20 odd non-deficient `L ≤ 10¹⁰`, the smallest being `1527701175 = 3³5²7²·11·13·17·19`
+(`η = 1.014`). It also cannot give `ω(lcm) ≥ 6`: at `{3,5,7,11,13}` it fails for large exponents.
+Going further needs an exact (non-union-bound) treatment of the first mixed stage `{3,5}`, or a
+prime-by-prime distorted sieve in the style of Hough / BBMST. See [MILESTONES.md](MILESTONES.md).
 
 ## Reproduce
 
 ```
 cd lean
-lake build            # mathlib from cache (≈1 GB); ScanK ≈1 CPU-hour, ScanN ≈3 min, ScanT ≈7 CPU-hours
+lake exe cache get    # Mathlib from cache (≈1 GB)
+lake build            # whole library, about 7 minutes from scratch
 lake env lean Covering/Axioms.lean   # prints the axioms of each headline theorem
+python3 ../gen_lean_files.py --check # the generated certificate files match their data
 ```
+
+CI (`.github/workflows/lean.yml`) runs the same steps on every push. The certificate data come from
+`gen_lean_certs.py` (hybrid) and the shaped-moduli enumeration in `gen_lean_files.py`.
 
 Python cross-checks: `phi_certificate.py N`, `tower_certificate.py N` scan odd non-deficient `L ≤ N`;
 the empirical soundness test (certificate never fires on an `L` that has a covering,

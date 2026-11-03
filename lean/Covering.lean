@@ -1,5 +1,4 @@
 import Covering.Basic
-import Covering.Smoke
 import Covering.Count
 import Covering.Phi
 import Covering.Fast
@@ -7,8 +6,6 @@ import Covering.Check
 import Covering.Product
 import Covering.Tower
 import Covering.TowerCheck
-import Covering.Probe
-import Covering.Probe3
 import Covering.ScanN
 import Covering.BFF
 import Covering.FourPrimes
@@ -21,4 +18,7 @@ import Covering.Hybrid.Nu
 import Covering.Hybrid.Main
 import Covering.Hybrid.Check
 import Covering.HybridScan.All
+import Covering.Test.Classic
+import Covering.Test.PhiControls
+import Covering.Test.TowerControls
 import Covering.Axioms
