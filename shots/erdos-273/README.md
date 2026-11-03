@@ -4,6 +4,14 @@
 
 **Problem** ([erdosproblems.com/273](https://www.erdosproblems.com/273)). Is there a covering system with distinct moduli, all of the form $p-1$ for primes $p \ge 5$? Selfridge found one using divisors of 360 when $p = 3$ is allowed (so modulus 2 is available); with $p \ge 5$ nothing is known.
 
+## Prior work (erdosproblems.com forum, read 2 Nov 2026)
+
+- Zeraoulia (Jul 2026, Zenodo 10.5281/zenodo.21613011): lcm $\ge 393\,120$.
+- "ideal_ombrer" (12 Jul 2026): the BBMST distortion sieve applied to this pool shows a covering must use a modulus $p-1$ with $p > 877$; also $\sum 1/(p-1) \ge 1 + \exp(-3.36\cdot 10^{21})$ via Filaseta–Kalogirou.
+- "veljjanoski" (Sep 2026, github.com/veljjanoski/erdos273): two independent exact searches, **no covering with lcm $< 8\cdot 10^6$**.
+
+Our claim 5 below ($\ge 21\,621\,600$) improves the last bound by a factor $\approx 2.7$, by a certificate rather than a search, but it is numerical (floating point with exact rechecks near the boundary), not machine-checked. The forum has suspended new comments.
+
 ## Results
 
 | # | Claim | Disposition |
