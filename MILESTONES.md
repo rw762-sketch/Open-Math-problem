@@ -54,7 +54,7 @@ Outline:
 - ✅ Prime replacement in Lean (any exponents) + shaped enumeration ⇒ `odd_covering_lcm_gt_6891884_kernel`, kernel only (supersedes the 7 CPU-hour native scan).
 - ✅ Distorted tower certificate in Lean (`Hybrid/`, `one_le_eta`): weighted counting on ℤ/Q, stage by stage.
 - ✅ **`odd_covering_lcm_gt_1527701174`: odd covering ⇒ lcm ≥ 1 527 701 175, kernel only** (1638 certificates, `HybridScan/`).
-- ⬜ Push past 1.53·10⁹: exact (non-union-bound) treatment of the first mixed stage {3,5}.
+- ✗ Push past 1.53·10⁹ via an exact first mixed stage {3,5}: tried (`exact35/`), **no gain**: the union bound is exactly tight there (worst case 78/266). An exact {3,5,7} block would need worst-case covered fraction < 0.5732 vs union bound 0.5933; undecided.
 - Only route to new numerical bounds past 11 486 475: prime-by-prime distorted sieve (Hough / BBMST) or Schroeder-style conditional reweighting. Research-level formalization; decide after Milestone 2.
 
 ## Side track (parked) 🧪
