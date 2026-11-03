@@ -2,3 +2,6 @@ lean/.lake/
 __pycache__/
 *.pyc
 lean/.lake/
+paper/*.aux
+paper/*.log
+paper/*.out
