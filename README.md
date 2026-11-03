@@ -1,5 +1,8 @@
 # Odd covering systems: a distorted tower sieve, checked in Lean
 
+[![Lean proofs](https://github.com/rw762-sketch/Open-Math-problem/actions/workflows/lean.yml/badge.svg)](https://github.com/rw762-sketch/Open-Math-problem/actions/workflows/lean.yml)
+
+
 *Ryan Wu and Claude Fable 5.1 · November 2026 · Status: problem **open**; results below as stated.*
 *Pages: [problem statement](docs/PROBLEM.md) · [progress report with prose proofs and claims ledger](docs/PROGRESS.md) · [references](docs/references/) · [milestones](MILESTONES.md).*
 

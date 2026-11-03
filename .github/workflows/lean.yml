@@ -1,0 +1,30 @@
+name: Lean proofs
+
+on:
+  push:
+  pull_request:
+  workflow_dispatch:
+
+jobs:
+  build:
+    runs-on: ubuntu-latest
+    timeout-minutes: 120
+    steps:
+      - uses: actions/checkout@v4
+
+      - name: Build the Lean development (Mathlib from cache)
+        uses: leanprover/lean-action@v1
+        with:
+          lake-package-directory: lean
+          build: true
+          test: false
+          lint: false
+          use-mathlib-cache: true
+
+      - name: Axiom report
+        working-directory: lean
+        run: |
+          lake env lean Covering/Axioms.lean | tee axioms.txt
+          if grep -q sorryAx axioms.txt; then echo "::error::a headline theorem depends on sorry"; exit 1; fi
+          grep "odd_covering_lcm_gt_1527701174" axioms.txt | grep -q "\[propext, Classical.choice, Quot.sound\]" \
+            || { echo "::error::headline theorem is not kernel-only"; exit 1; }
