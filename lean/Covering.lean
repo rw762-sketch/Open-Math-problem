@@ -20,3 +20,6 @@ import Covering.Replace
 import Covering.Shaped
 import Covering.ShapedBound
 import Covering.ShapedK6.All
+import Covering.Hybrid.Fibre
+import Covering.Hybrid.Nu
+import Covering.Hybrid.Main
