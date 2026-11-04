@@ -1,0 +1,1 @@
+- 2026-11-04 · uniform-exponent certificate for P={3,...,13}: obstructed (first mixed stage exactly tight; loss is G_3 -> 1 under the tower measure) · [record](research/records/2026-11-04-uniform-exponent-certificate.md)
