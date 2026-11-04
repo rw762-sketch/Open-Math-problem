@@ -1,1 +1,2 @@
 - 2026-11-04 · uniform-exponent certificate for P={3,...,13}: obstructed (first mixed stage exactly tight; loss is G_3 -> 1 under the tower measure) · [record](research/records/2026-11-04-uniform-exponent-certificate.md)
+- 2026-11-04 · tau_p >= 3 for primes p >= 79 (HSW Thm 3.2 construction + BBMST 73-smooth remark); own-certificate route obstructed · [record](research/records/2026-11-04-tau-p-lower-bound.md)
