@@ -2,3 +2,4 @@
 - 2026-11-04 · tau_p >= 3 for primes p >= 79 (HSW Thm 3.2 construction + BBMST 73-smooth remark); own-certificate route obstructed · [record](research/records/2026-11-04-tau-p-lower-bound.md)
 - 2026-11-20 · Independence gain for {3,5,7}: five-prime wall broken in prose (Theorem A, omega >= 6); scan excludes 16 of 20 exceptions below 1e10 (numerical); audit and Lean pending · [record](research/records/2026-11-20-independence-gain.md)
 - 2026-11-21 · Sharper bound for one distorted stage (theta-formulation; exploratory floats): five primes 0.953, six primes 1.087, one more L below 1e10 falls numerically; not a certificate · [record](research/records/2026-11-21-sharper-stage-bound.md)
+- 2026-11-21 · Literature: Dai–Li–Li–Yi (arXiv 2611.15110) prove 45 | Q and a modulus <= 9 for every odd covering, with a convex comparison theorem that supersedes our 21 Nov stage bound · [summary](docs/references/DLLY26.md)
