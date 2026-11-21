@@ -16,4 +16,6 @@
 - §4.1 is the restriction "prime powers act as repeated moduli", one level deep.
 - Not found in the parts read: the exact product formula for two families inside one residue class (Lemmas 1–2 of [FIVE_PRIMES.md](../FIVE_PRIMES.md)), which is not a convexity argument. Their Remark 1.4 mentions tracking intersections of residue classes at small primes as a refinement.
 - Neither result implies the other. Theirs holds for all supports ($45 \mid Q$, a modulus $\le 9$); ours excludes supports with at most five primes.
-- The case left open for the conjecture is $45 \mid Q$. A rough extrapolation of their §4.3 computation with the prime 5 added gives about $1.5$ (our estimate, not computed).
+- The case left open for the conjecture is $45 \mid Q$. Their method applied to it gives about $2.07$ (computed in [bench/](../../bench/README.md), floats, our caps; an earlier guess of $1.5$ was wrong).
+- Their two totals are reproduced to nine digits by `bench/reproduce.py`.
+- By-product not stated in the paper: the same bound for the first six odd primes gives $0.8947 < 1$ (exact fraction in `bench/results.json`), so at least seven primes are needed, given their Theorem 2.6.

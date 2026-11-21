@@ -1,0 +1,12 @@
+no9 round 0 1.07182 13
+no9 round 1 1.06842 26
+no9 round 2 1.06834 39
+no9 round 3 1.06834 52
+no9 final (table to 100000): 1.0194181005379432 [('mid', 0.0015141990168773412), ('far', np.float64(1.7399705093645722e-05))] 54
+no9 after tuning the upper ranges: 1.0193335355556008 166
+open round 0 2.17136 13
+open round 1 2.16551 26
+open round 2 2.16485 40
+open round 3 2.16483 53
+open final (table to 100000): 2.0736871469547844 [('mid', 0.0027794358007157), ('far', np.float64(3.193857790167339e-05))] 54
+open after tuning the upper ranges: 2.073592947000112 166

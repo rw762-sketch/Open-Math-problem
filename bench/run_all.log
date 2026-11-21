@@ -1,0 +1,13 @@
+{'no5': np.float64(0.8364915559195077), 'no9': 0.9994428113385369, 'paper_no5': 0.836491555924628, 'paper_no9': 0.999442814397167}
+4 {'largest': 11.0, 'union': 0.9111, 'second_moment': 0.8111, 'block_second_moment': 0.7785, 'comparison': 0.6061, 'block_comparison': 0.72} 1
+5 {'largest': 13.0, 'union': 1.1434, 'second_moment': 1.0126, 'block_second_moment': 0.9682, 'comparison': 0.7854, 'block_comparison': 0.8327} 1
+6 {'largest': 17.0, 'union': 1.3354, 'second_moment': 1.1718, 'block_second_moment': 1.1273, 'comparison': 0.8947, 'block_comparison': 0.9183} 1
+7 {'largest': 19.0, 'union': 1.5199, 'second_moment': 1.3399, 'block_second_moment': 1.2955, 'comparison': 1.0026, 'block_comparison': 1.0151} 1
+8 {'largest': 23.0, 'union': 1.6809, 'second_moment': 1.4702, 'block_second_moment': 1.4258, 'comparison': 1.0914, 'block_comparison': 1.0969} 2
+9 {'largest': 29.0, 'union': 1.8138, 'second_moment': 1.5665, 'block_second_moment': 1.522, 'comparison': 1.1548, 'block_comparison': 1.1541} 2
+10 {'largest': 31.0, 'union': 1.9435, 'second_moment': 1.6617, 'block_second_moment': 1.6173, 'comparison': 1.2179, 'block_comparison': 1.2108} 2
+open 2.1621 85
+open_block 2.1815 122
+no5 0.8003 195
+no9_direct 1.0595 280
+squarefree_direct 0.5123 354
